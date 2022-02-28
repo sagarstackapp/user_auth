@@ -22,7 +22,7 @@ class ChatRoomService {
 
   getConversationMessage(String chatRoom) async {
     try {
-      return await chatRoomCollection
+      return chatRoomCollection
           .doc(chatRoom)
           .collection('Chats')
           .orderBy('Time')
