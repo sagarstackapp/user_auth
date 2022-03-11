@@ -6,10 +6,11 @@ import 'package:user_auth/common/constant/string_res.dart';
 import 'elevated_button.dart';
 import 'text_form_field.dart';
 
-Widget firstName(TextEditingController controller) {
+Widget name(TextEditingController controller, String hint) {
   return CommonTextFormField(
     controller: controller,
-    hintText: 'Enter Firstname',
+    hintText: hint,
+    prefixIcon: Icons.person_rounded,
     validator: (value) {
       if (value.isEmpty) {
         return 'First name can\'t be empty!';
@@ -41,9 +42,9 @@ Widget lastName(TextEditingController controller) {
 Widget email(TextEditingController controller) {
   return CommonTextFormField(
     controller: controller,
-    hintText: 'Enter Email Address',
+    hintText: 'Enter email address',
     keyboardType: TextInputType.emailAddress,
-    prefixIcon: Icons.person_rounded,
+    prefixIcon: Icons.alternate_email,
     validator: (value) {
       if (value.isEmpty) {
         return 'Email address can\'t be empty!';
@@ -83,8 +84,9 @@ Widget password(TextEditingController controller) {
 Widget confirmPassword(
     TextEditingController controller, TextEditingController controller1) {
   return CommonTextFormField(
-    controller: controller,
-    hintText: 'Enter password again',
+    controller: controller1,
+    hintText: 'Enter confirm password',
+    prefixIcon: Icons.lock_open_rounded,
     obscureText: true,
     validator: (value) {
       if (value.isEmpty) {
@@ -93,7 +95,7 @@ Widget confirmPassword(
       if (controller.text.length < 8) {
         return 'Confirm password must be 8 character long.!';
       }
-      if (controller1.text != controller.text) {
+      if (controller.text != controller1.text) {
         return 'Password do not matching.!';
       }
       return null;

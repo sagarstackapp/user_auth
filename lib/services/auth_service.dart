@@ -34,27 +34,23 @@ class AuthService {
   }
 
   //     ======================= SignUp =======================     //
-  Future<String> createUser(
-      BuildContext context, String email, String password) async {
+  Future<UserCredential> createUser(String email, String password) async {
     try {
-      showLoader(context);
-      var authUser = await firebaseAuth.createUserWithEmailAndPassword(
+      UserCredential authUser =
+          await firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       String userId = authUser.user.uid.toString();
       logs('Created User User Id : $userId');
-      return userId;
-    } catch (e) {
-      logs('Catch error in Verify User : $e');
-      var error = e.toString().split(' ')[0];
-      if (error == '[firebase_auth/email-already-in-use]') {
-        Fluttertoast.showToast(
-          msg: 'You already registered, Please Sign In.!',
-          backgroundColor: ColorResource.red,
-          textColor: ColorResource.white,
-        );
-      }
+      return authUser;
+    } on FirebaseAuthException catch (e) {
+      logs('Catch error in Create User --> ${e.message}');
+      Fluttertoast.showToast(
+        msg: e.message,
+        backgroundColor: ColorResource.red,
+        textColor: ColorResource.white,
+      );
       return null;
     }
   }
@@ -63,15 +59,15 @@ class AuthService {
   Future<UserCredential> verifyUser(
       BuildContext context, String email, String password) async {
     try {
-      var authUser = await firebaseAuth.signInWithEmailAndPassword(
+      UserCredential authUser = await firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
       return authUser;
     } on FirebaseException catch (e) {
-      logs('Catch error in Verify User : ${e.message}');
+      logs('Catch error in Verify User --> ${e.message}');
       Fluttertoast.showToast(
-        msg: e.message,
+        msg: e.message.split('. ')[0].trim(),
         backgroundColor: ColorResource.red,
         textColor: ColorResource.white,
       );

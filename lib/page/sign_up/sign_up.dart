@@ -1,11 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:user_auth/common/constant/color_res.dart';
+import 'package:user_auth/common/constant/image_res.dart';
 import 'package:user_auth/common/constant/string_res.dart';
 import 'package:user_auth/common/method/methods.dart';
-import 'package:user_auth/common/widget/common_app_bar.dart';
+import 'package:user_auth/common/widget/common_image_assets.dart';
+import 'package:user_auth/common/widget/common_loader.dart';
+import 'package:user_auth/common/widget/elevated_button.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/model/user_model.dart';
+import 'package:user_auth/page/sign_in/sign_in.dart';
 import 'package:user_auth/services/auth_service.dart';
 import 'package:user_auth/services/firebase_messaging.dart';
 import 'package:user_auth/services/users_service.dart';
@@ -27,106 +32,132 @@ class SignUpState extends State<SignUp> {
   AuthService authService = AuthService();
   UserService userService = UserService();
   FirebaseNotification firebaseNotification = FirebaseNotification();
-  UserModel userDetails;
   String token;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     logs('Current screen --> $runtimeType');
-    return SafeArea(
-      maintainBottomViewPadding: true,
-      child: Scaffold(
-        appBar: const CommonAppBar(title: 'Firebase User Integration'),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+    return Scaffold(
+      backgroundColor: ColorResource.white,
+      body: Stack(
+        children: [
+          ListView(
             children: [
-              titleText('Register User'),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: Form(
-                  key: signUpFormKey,
-                  child: signUpForm(),
+              const Text(
+                'Register User',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 50),
+                child: const CommonImageAsset(image: ImageResources.login),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Form(
+                  key: signUpFormKey,
+                  child: Column(
+                    children: [
+                      name(firstNameController, 'Enter first name'),
+                      name(lastNameController, 'Enter last name'),
+                      email(emailController),
+                      password(passwordController),
+                      confirmPassword(passwordController, cPasswordController),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              CommonElevatedButton(
+                text: StringResources.register,
+                buttonColor: const Color(0xFF1A49A4),
+                textColor: ColorResource.white,
+                textSize: 16,
+                margin: 10,
+                onPressed: registerUser,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                StringResources.logInRequest,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: ColorResource.grey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: () => Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignIn()),
+                  (route) => false,
+                ),
+                child: const Text(
+                  StringResources.signUpOption,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 19,
+                    color: ColorResource.darkGreen,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
             ],
           ),
-        ),
+          isLoading ? const LoadingPage() : Container(),
+        ],
       ),
     );
   }
 
-  Widget signUpForm() {
-    return ListView(
-      shrinkWrap: true,
-      primary: false,
-      children: [
-        firstName(firstNameController),
-        lastName(lastNameController),
-        email(emailController),
-        password(passwordController),
-        confirmPassword(cPasswordController, passwordController),
-        const SizedBox(height: 30),
-        elevatedButton(StringResources.register, register),
-        const SizedBox(height: 20),
-        textBody(StringResources.logInRequest),
-        const SizedBox(height: 10),
-        textHeader(goToSignIn, StringResources.signUpOption),
-        const SizedBox(height: 20),
-      ],
-    );
-  }
-
-  goToSignIn() {
-    goSignIn(context);
-    setState(() {});
-  }
-
-  register() {
-    final isValid = signUpFormKey.currentState.validate();
-
-    if (isValid) {
+  registerUser() async {
+    if (signUpFormKey.currentState.validate()) {
+      setState(() {
+        isLoading = true;
+      });
       signUpFormKey.currentState.save();
-      signUpValidation();
-    } else {
-      Fluttertoast.showToast(
-        msg: 'Enter valid details',
-        backgroundColor: ColorResource.red,
-        textColor: ColorResource.white,
-      );
+      UserCredential userCredential = await authService.createUser(
+          emailController.text, passwordController.text);
+      if (userCredential != null) {
+        String token = await firebaseNotification.firebaseToken();
+        logs('Token Value --> $token');
+        UserModel userDetails = UserModel(
+          uid: userCredential.user.uid,
+          fname: firstNameController.text,
+          lname: lastNameController.text,
+          email: userCredential.user.email,
+          token: token,
+          type: 'Firebase',
+        );
+        logs('UserDetails --> ${userDetails.userMap()}');
+        await userService.createUser(userDetails);
+        Fluttertoast.showToast(
+          msg:
+              '${userCredential.user.displayName}\'s account created successfully..!',
+          backgroundColor: ColorResource.orange,
+          textColor: ColorResource.white,
+        );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const SignIn()),
+          (route) => false,
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: 'You already registered, Please Sign In.!',
+          backgroundColor: ColorResource.red,
+          textColor: ColorResource.white,
+        );
+      }
     }
-  }
-
-  Future<void> signUpValidation() async {
-    var userId = await authService.createUser(
-        context, emailController.text, passwordController.text);
-    var token = await firebaseNotification.firebaseToken();
-    logs('Token Value : $token');
-
-    userDetails = UserModel(
-      uid: userId,
-      fname: firstNameController.text,
-      lname: lastNameController.text,
-      email: emailController.text,
-      token: token,
-      type: 'Firebase',
-    );
-
-    if (userId != null) {
-      await userService.createUser(userDetails);
-      logs('Sign Up Validation UserID : $userId');
-      Fluttertoast.showToast(
-        msg: '${userDetails.fname} \n Your account created successfully..!',
-        backgroundColor: ColorResource.orange,
-        textColor: ColorResource.white,
-      );
-      goToSignIn();
-    } else {
-      Fluttertoast.showToast(
-        msg: 'You already registered, Please Sign In.!',
-        backgroundColor: ColorResource.red,
-        textColor: ColorResource.white,
-      );
-    }
+    setState(() {
+      isLoading = false;
+    });
   }
 }
