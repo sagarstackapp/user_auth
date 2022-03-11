@@ -25,8 +25,8 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>GoogleService-Info.plist</string>
-				<string>com.example.user_auth</string>
+				<string>com.googleusercontent.apps.17508847403-0k0b7gcgujo55jkr9f5ui4c88rqsh54c</string>
+				<string>com.example.userAuth</string>
 				<string>fb1320498878452879</string>
 			</array>
 		</dict>
