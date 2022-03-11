@@ -27,7 +27,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -36,8 +36,8 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.user_auth"
-        minSdkVersion 23
-        targetSdkVersion 31
+        minSdkVersion 21
+        targetSdkVersion 32
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -63,6 +63,3 @@ dependencies {
     implementation "androidx.multidex:multidex:2.0.1"
     implementation 'com.google.firebase:firebase-messaging'
 }
-
-
-apply plugin: 'com.google.gms.google-services'

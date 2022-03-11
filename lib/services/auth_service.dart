@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:user_auth/common/constant/color_res.dart';
@@ -17,17 +18,17 @@ class AuthService {
     try {
       var user = firebaseAuth.currentUser;
       if (user == null) {
-        print('Hello, No user Found');
+        logs('Hello, No user Found');
         login = false;
         return login;
       } else {
-        print(user);
-        print('Hello, This is current user : ${user.uid}');
+        logs('Current user --> $user');
+        logs('Hello, This is current user : ${user.uid}');
         login = true;
         return login;
       }
     } catch (e) {
-      print(e.toString());
+      logs(e.toString());
       return null;
     }
   }
@@ -42,18 +43,17 @@ class AuthService {
         password: password,
       );
       String userId = authUser.user.uid.toString();
-      print('Created User User Id : $userId');
+      logs('Created User User Id : $userId');
       return userId;
     } catch (e) {
-      print('Catch error in Verify User : $e');
+      logs('Catch error in Verify User : $e');
       var error = e.toString().split(' ')[0];
       if (error == '[firebase_auth/email-already-in-use]') {
         Fluttertoast.showToast(
           msg: 'You already registered, Please Sign In.!',
-          backgroundColor: ColorResource.Red,
-          textColor: ColorResource.White,
+          backgroundColor: ColorResource.red,
+          textColor: ColorResource.white,
         );
-        hideLoader(context);
       }
       return null;
     }
@@ -63,29 +63,18 @@ class AuthService {
   Future<UserCredential> verifyUser(
       BuildContext context, String email, String password) async {
     try {
-      showLoader(context);
       var authUser = await firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
       return authUser;
-    } catch (e) {
-      print('Catch error in Verify User : $e');
-      var error = e.toString().split(' ')[0];
-      if (error == '[firebase_auth/wrong-password]') {
-        Fluttertoast.showToast(
-          msg: 'Please, Enter correct password',
-          backgroundColor: ColorResource.Red,
-          textColor: ColorResource.White,
-        );
-      } else {
-        Fluttertoast.showToast(
-          msg: 'User not exist.!',
-          backgroundColor: ColorResource.Red,
-          textColor: ColorResource.White,
-        );
-      }
-      hideLoader(context);
+    } on FirebaseException catch (e) {
+      logs('Catch error in Verify User : ${e.message}');
+      Fluttertoast.showToast(
+        msg: e.message,
+        backgroundColor: ColorResource.red,
+        textColor: ColorResource.white,
+      );
       return null;
     }
   }
@@ -95,23 +84,21 @@ class AuthService {
     try {
       showLoader(context);
       await firebaseAuth.sendPasswordResetEmail(email: email);
-      hideLoader(context);
     } catch (e) {
-      print('Catch error in Verify User : $e');
+      logs('Catch error in Verify User : $e');
       if (e.code == 'ERROR_USER_NOT_FOUND') {
         Fluttertoast.showToast(
           msg: 'You don\'t have account, Please Sign Up',
-          backgroundColor: ColorResource.Red,
-          textColor: ColorResource.White,
+          backgroundColor: ColorResource.red,
+          textColor: ColorResource.white,
         );
       } else {
         Fluttertoast.showToast(
           msg: 'Enter Valid Email Address',
-          backgroundColor: ColorResource.Red,
-          textColor: ColorResource.White,
+          backgroundColor: ColorResource.red,
+          textColor: ColorResource.white,
         );
       }
-      hideLoader(context);
     }
   }
 
@@ -121,11 +108,9 @@ class AuthService {
     await googleSignIn.signOut();
   }
 
-
-//     ======================= Google Sign In =======================     //
-  Future signInWithGoogle(BuildContext context) async {
+  //     ======================= Google Sign In =======================     //
+  Future<UserCredential> signInWithGoogle(BuildContext context) async {
     try {
-      showLoader(context);
       GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
       GoogleSignInAuthentication googleSignInAuthentication =
           await googleSignInAccount.authentication;
@@ -135,12 +120,52 @@ class AuthService {
         accessToken: googleSignInAuthentication.accessToken,
       );
 
-      var authResult = await firebaseAuth.signInWithCredential(credentials);
+      UserCredential authResult =
+          await firebaseAuth.signInWithCredential(credentials);
       return authResult;
-    } catch (e) {
-      print(e);
+    } on FirebaseException catch (e) {
+      logs('Catch error in Verify User : ${e.message}');
+      Fluttertoast.showToast(
+        msg: e.message,
+        backgroundColor: ColorResource.red,
+        textColor: ColorResource.white,
+      );
+      return null;
     }
   }
 
-
+  //     ======================= Facebook Sign In =======================     //
+  Future<UserCredential> signInWithFacebook(BuildContext context) async {
+    try {
+      final LoginResult result = await FacebookAuth.instance
+          .login(permissions: ['email', 'public_profile']);
+      logs('Result --> ${result.status}');
+      switch (result.status) {
+        case LoginStatus.success:
+          final OAuthCredential facebookAuthCredential =
+              FacebookAuthProvider.credential(result.accessToken.token);
+          UserCredential authResult = await FirebaseAuth.instance
+              .signInWithCredential(facebookAuthCredential);
+          return authResult;
+          break;
+        case LoginStatus.cancelled:
+          return null;
+          break;
+        case LoginStatus.failed:
+          return null;
+          break;
+        default:
+          return null;
+          break;
+      }
+    } on FirebaseException catch (e) {
+      logs('Catch error in Verify User : ${e.message}');
+      Fluttertoast.showToast(
+        msg: e.message,
+        backgroundColor: ColorResource.red,
+        textColor: ColorResource.white,
+      );
+      return null;
+    }
+  }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/method/methods.dart';
+import 'package:user_auth/common/widget/common_app_bar.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/model/jokes_category.dart';
 import 'package:user_auth/providers/jokes_category.dart';
@@ -23,25 +24,25 @@ class _JokeCategoryState extends State<JokeCategory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: topMenuBar(context, 'Jokes Categories'),
+      appBar: const CommonAppBar(title: 'Jokes Categories'),
       body: FutureBuilder<JokesCategories>(
         future: Provider.of<JokesCategory>(context, listen: false)
             .fetchJokesCategory(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
-              return Center(
+              return const Center(
                 child: Text(
                   'Fetch opportunity data',
                   textAlign: TextAlign.center,
                 ),
               );
             case ConnectionState.active:
-              return Center(
+              return const Center(
                 child: Text(''),
               );
             case ConnectionState.waiting:
-              return Center(
+              return const Center(
                 child: Text(
                   'Connection waiting...',
                   textAlign: TextAlign.center,
@@ -59,8 +60,8 @@ class _JokeCategoryState extends State<JokeCategory> {
                     return ListTile(
                       title: Text(
                         jokesCategories.category[index],
-                        style: TextStyle(
-                          color: ColorResource.White,
+                        style: const TextStyle(
+                          color: ColorResource.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -81,7 +82,7 @@ class _JokeCategoryState extends State<JokeCategory> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.exit_to_app_outlined),
+        child: const Icon(Icons.exit_to_app_outlined),
         onPressed: () {
           authService.userSignOut();
           goToSignIn(context);
@@ -89,8 +90,6 @@ class _JokeCategoryState extends State<JokeCategory> {
       ),
     );
   }
-
-
 
   goToSignIn(BuildContext context) {
     goSignIn(context);

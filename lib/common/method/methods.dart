@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:user_auth/page/conversation_page/conversation.dart';
 import 'package:user_auth/page/forgot_password/forgot_password.dart';
@@ -6,6 +7,12 @@ import 'package:user_auth/page/search/search_page.dart';
 import 'package:user_auth/page/sign_in/sign_in.dart';
 import 'package:user_auth/page/sign_up/sign_up.dart';
 import 'package:user_auth/page/user_details/user_details.dart';
+
+logs(String message) {
+  if (kDebugMode) {
+    print(message);
+  }
+}
 
 showLoader(BuildContext context) {
   showDialog(
@@ -19,7 +26,7 @@ showLoader(BuildContext context) {
               width: double.infinity,
               color: Colors.transparent,
             ),
-            Center(
+            const Center(
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation(Colors.orange),
                 strokeWidth: 5,
@@ -38,33 +45,36 @@ hideLoader(BuildContext context) {
 }
 
 goSignIn(BuildContext context) {
-  Navigator.push(context, MaterialPageRoute(builder: (context) => SignIn()));
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => const SignIn()));
 }
 
 goSignUp(BuildContext context) {
-  Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => const SignUp()));
 }
 
 goForgotPassword(BuildContext context) {
   Navigator.push(
-      context, MaterialPageRoute(builder: (context) => ForgotPassword()));
+      context, MaterialPageRoute(builder: (context) => const ForgotPassword()));
 }
 
 goUserDetails(BuildContext context) {
   Navigator.push(
-      context, MaterialPageRoute(builder: (context) => UserDetails()));
+      context, MaterialPageRoute(builder: (context) => const UserDetails()));
 }
 
 goSearch(BuildContext context) {
-  Navigator.push(context, MaterialPageRoute(builder: (context) => Search()));
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => const Search()));
 }
 
 goConversation(BuildContext context) {
   Navigator.push(
-      context, MaterialPageRoute(builder: (context) => Conversation()));
+      context, MaterialPageRoute(builder: (context) => const Conversation()));
 }
 
 goJokeCategory(BuildContext context) {
   Navigator.push(
-      context, MaterialPageRoute(builder: (context) => JokeCategory()));
+      context, MaterialPageRoute(builder: (context) => const JokeCategory()));
 }

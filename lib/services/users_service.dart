@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/model/user_model.dart';
 
 class UserService {
@@ -9,7 +10,7 @@ class UserService {
     try {
       await userCollection.doc(user.uid).set(user.userMap());
     } catch (e) {
-      print('Catch error in Create User : $e');
+      logs('Catch error in Create User : $e');
     }
   }
 
@@ -18,7 +19,7 @@ class UserService {
       DocumentSnapshot doc = await userCollection.doc(uid).get();
       return UserModel.fromMap(doc.data());
     } catch (e) {
-      print('Catch error in Get Current User : $e');
+      logs('Catch error in Get Current User : $e');
       return null;
     }
   }
@@ -28,7 +29,7 @@ class UserService {
       var fields = await userCollection.doc(uid).update({'token': token});
       return fields;
     } on Exception catch (e) {
-      print('Catch error in Update Token : $e');
+      logs('Catch error in Update Token : $e');
       return null;
     }
   }
@@ -38,7 +39,7 @@ class UserService {
     try {
       await userCollection.doc(userId).update({'pid': productId});
     } catch (e) {
-      print('Catch error in Purchase Id : $e');
+      logs('Catch error in Purchase Id : $e');
     }
   }
 }

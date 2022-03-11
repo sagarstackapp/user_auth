@@ -4,12 +4,15 @@ import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/constant/image_res.dart';
 import 'package:user_auth/common/constant/string_res.dart';
 import 'package:user_auth/common/method/methods.dart';
+import 'package:user_auth/common/widget/common_app_bar.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/page/jokes/jokes_category.dart';
 import 'package:user_auth/page/user_details/user_details_view_model.dart';
 import 'package:user_auth/services/auth_service.dart';
 
 class UserDetails extends StatefulWidget {
+  const UserDetails({Key key}) : super(key: key);
+
   @override
   UserDetailsState createState() => UserDetailsState();
 }
@@ -22,25 +25,26 @@ class UserDetailsState extends State<UserDetails> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unnecessary_statements
     userDetailsViewModel ?? (userDetailsViewModel = UserDetailsViewModel(this));
-    print(runtimeType);
+    logs('Current screen --> $runtimeType');
     return SafeArea(
       maintainBottomViewPadding: true,
       child: Scaffold(
-        appBar: topMenuBar(context,
-            '${userDetailsViewModel.userModel == null ? ' ' : '${userDetailsViewModel.userModel.fname}\'s ${StringResources.Title}'}'),
+        appBar: CommonAppBar(
+            title: userDetailsViewModel.userModel == null
+                ? ' '
+                : '${userDetailsViewModel.userModel.fname}\'s ${StringResources.title}'),
         body: userDetailsViewModel.userModel == null
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(ColorResource.Orange),
+                  valueColor: AlwaysStoppedAnimation(ColorResource.orange),
                   strokeWidth: 5,
-                  backgroundColor: ColorResource.White,
+                  backgroundColor: ColorResource.white,
                 ),
               )
             : userDetails(),
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add_alert),
+          child: const Icon(Icons.add_alert),
           onPressed: goToJokerCategory,
         ),
       ),
@@ -56,43 +60,43 @@ class UserDetailsState extends State<UserDetails> {
       height: double.infinity,
       child: Card(
         elevation: 20,
-        shadowColor: ColorResource.White,
-        color: ColorResource.Grey,
+        shadowColor: ColorResource.white,
+        color: ColorResource.grey,
         child: ListView(
           shrinkWrap: true,
           children: [
             CircleAvatar(
-              backgroundColor: ColorResource.White,
+              backgroundColor: ColorResource.white,
               radius: 70,
               child: CircleAvatar(
                 backgroundImage: userDetailsViewModel.userModel.image == null
-                    ? AssetImage(ImageResources.Avatar)
+                    ? const AssetImage(ImageResources.avatar)
                     : NetworkImage(userDetailsViewModel.userModel.image),
                 radius: 60,
               ), //CircleAvatar
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
-              '${userDetailsViewModel.userModel.email}',
+              userDetailsViewModel.userModel.email,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
-                color: ColorResource.Black,
+                color: ColorResource.black,
                 fontWeight: FontWeight.w500,
               ),
             ),
             Text(
               '${userDetailsViewModel.userModel.fname} ${userDetailsViewModel.userModel.lname}',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 30,
-                color: ColorResource.White,
+                color: ColorResource.white,
                 fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             elevatedButton('LogOut', () {
-              print('Log Out');
+              logs('Log Out');
               authService.userSignOut();
               goToSignIn();
             }),
@@ -104,7 +108,7 @@ class UserDetailsState extends State<UserDetails> {
 
   goToJokerCategory() {
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => JokeCategory()));
+        context, MaterialPageRoute(builder: (context) => const JokeCategory()));
     setState(() {});
   }
 }

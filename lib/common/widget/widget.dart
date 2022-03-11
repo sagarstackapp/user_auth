@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:user_auth/common/constant/color_res.dart';
+import 'package:user_auth/common/constant/string_res.dart';
 
 import 'elevated_button.dart';
 import 'text_form_field.dart';
@@ -40,13 +42,14 @@ Widget email(TextEditingController controller) {
   return CommonTextFormField(
     controller: controller,
     hintText: 'Enter Email Address',
+    keyboardType: TextInputType.emailAddress,
+    prefixIcon: Icons.person_rounded,
     validator: (value) {
       if (value.isEmpty) {
         return 'Email address can\'t be empty!';
       }
-      if (!RegExp(r"^[a-z0-9.a-z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-z0-9]+\.[a-z]+")
-          .hasMatch(value)) {
-        return 'Enter a valid username.!';
+      if (!RegExp(StringResources.emailRegExp).hasMatch(value)) {
+        return 'Please enter valid Email.!';
       }
       return null;
     },
@@ -58,9 +61,16 @@ Widget password(TextEditingController controller) {
     controller: controller,
     hintText: 'Enter password',
     obscureText: true,
+    prefixIcon: Icons.lock_open_rounded,
+    inputFormatters: [
+      LengthLimitingTextInputFormatter(8),
+    ],
     validator: (value) {
       if (value.isEmpty) {
         return 'Password can\'t be empty!';
+      }
+      if (!RegExp(StringResources.passwordRegexp).hasMatch(value)) {
+        return 'Password must contains number, alphabet & special character';
       }
       if (controller.text.length < 8) {
         return 'Password must be 8 character long.!';
@@ -104,25 +114,15 @@ Widget typeMessageField(TextEditingController controller) {
   );
 }
 
-Widget topMenuBar(BuildContext context, String title) {
-  return PreferredSize(
-    child: AppBar(
-      title: Center(child: Text(title)),
-      elevation: 20,
-    ),
-    preferredSize: Size(double.infinity, 80),
-  );
-}
-
 Widget titleText(String title) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 20.0),
     child: Text(
       title,
       textAlign: TextAlign.center,
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 25,
-        color: ColorResource.White,
+        color: ColorResource.white,
         wordSpacing: 3,
         letterSpacing: 1,
         fontWeight: FontWeight.w600,
@@ -135,7 +135,7 @@ Widget textBody(String text) {
   return Text(
     text,
     textAlign: TextAlign.center,
-    style: TextStyle(color: ColorResource.Black, fontSize: 20),
+    style: const TextStyle(color: ColorResource.black, fontSize: 20),
   );
 }
 
@@ -145,10 +145,10 @@ Widget textHeader(GestureTapCallback onTap, String text) {
     child: Text(
       text,
       textAlign: TextAlign.center,
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.w600,
-        color: ColorResource.White,
+        color: ColorResource.white,
       ),
     ),
   );
@@ -157,8 +157,8 @@ Widget textHeader(GestureTapCallback onTap, String text) {
 Widget elevatedButton(String text, VoidCallback onPressed) {
   return CommonElevatedButton(
     text: text,
-    textColor: ColorResource.White,
-    buttonColor: ColorResource.Blue,
+    textColor: ColorResource.white,
+    buttonColor: ColorResource.blue,
     onPressed: onPressed,
   );
 }
@@ -166,7 +166,7 @@ Widget elevatedButton(String text, VoidCallback onPressed) {
 Widget headerText(String text) {
   return Text(
     text,
-    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
   );
 }
 
@@ -179,7 +179,7 @@ Widget showAPILoader(BuildContext context) {
           width: MediaQuery.of(context).size.width,
           color: Colors.transparent,
         ),
-        Center(
+        const Center(
           child: CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation(Colors.orange),
             strokeWidth: 5,
@@ -205,7 +205,7 @@ Widget chatIcon(double margin, IconData icon, VoidCallback onPressed) {
     child: IconButton(
       icon: Icon(
         icon,
-        color: ColorResource.White.withOpacity(0.5),
+        color: ColorResource.white.withOpacity(0.5),
       ),
       onPressed: onPressed,
     ),

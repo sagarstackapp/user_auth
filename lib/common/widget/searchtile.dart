@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:user_auth/common/constant/color_res.dart';
 
-// ignore: must_be_immutable
 class SearchTile extends StatelessWidget {
-  String title;
-  String email;
-  VoidCallback onPressed;
+  final String title;
+  final String email;
+  final VoidCallback onPressed;
 
-  SearchTile({
+  const SearchTile({
+    Key key,
     this.title,
     this.email,
     this.onPressed,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,27 +26,28 @@ class SearchTile extends StatelessWidget {
               children: [
                 Text(
                   title ?? 'title',
-                  style: TextStyle(color: ColorResource.White, fontSize: 20),
+                  style:
+                      const TextStyle(color: ColorResource.white, fontSize: 20),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Text(
                   email ?? 'email',
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: ColorResource.Grey),
+                  style: const TextStyle(color: ColorResource.grey),
                 ),
               ],
             ),
           ),
-          Spacer(),
+          const Spacer(),
           ElevatedButton(
             onPressed: onPressed,
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
+            child: const Padding(
+              padding: EdgeInsets.all(15.0),
               child: Text(
                 'Message',
                 style: TextStyle(
                   fontSize: 20,
-                  color: ColorResource.White,
+                  color: ColorResource.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -58,7 +59,7 @@ class SearchTile extends StatelessWidget {
                 ),
               ),
               backgroundColor: MaterialStateProperty.all(
-                ColorResource.Blue,
+                ColorResource.blue,
               ),
             ),
           )

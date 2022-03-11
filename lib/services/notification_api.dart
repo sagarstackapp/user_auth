@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:user_auth/common/method/methods.dart';
 
 Future sendNotification(String body, String title, String token) async {
   String baseUrl = 'https://fcm.googleapis.com/fcm/send';
@@ -30,12 +31,12 @@ Future sendNotification(String body, String title, String token) async {
       "registration_ids": [token]
     }),
   );
-  print('Status code : ${response.statusCode}');
-  print('Body : ${response.body}');
+  logs('Status code : ${response.statusCode}');
+  logs('Body : ${response.body}');
   if (response.statusCode == 200 || response.statusCode == 201) {
     var message = jsonDecode(response.body);
     return message;
   } else {
-    print('Status code : ${response.statusCode}');
+    logs('Status code : ${response.statusCode}');
   }
 }

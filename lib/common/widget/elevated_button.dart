@@ -1,42 +1,49 @@
 import 'package:flutter/material.dart';
 
-
-// ignore: must_be_immutable
 class CommonElevatedButton extends StatelessWidget {
-  String text;
-  Color textColor;
-  Color buttonColor;
-  VoidCallback onPressed;
+  final String text;
+  final Color textColor;
+  final Color buttonColor;
+  final VoidCallback onPressed;
+  final double width;
+  final double margin;
+  final double textSize;
+  final double borderRadius;
 
-  CommonElevatedButton({
+  const CommonElevatedButton({
+    Key key,
     this.text,
     this.textColor,
     this.buttonColor,
     this.onPressed,
-  });
+    this.width,
+    this.margin,
+    this.borderRadius = 30,
+    this.textSize = 20,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      height: 60,
+      margin: EdgeInsets.symmetric(horizontal: margin ?? 30),
+      width: width ?? double.infinity,
+      height: 44,
       child: ElevatedButton(
         onPressed: onPressed,
         child: Text(
-          text,
+          text.toUpperCase(),
           style: TextStyle(
-            fontSize: 20,
+            fontSize: textSize,
             color: textColor,
+            fontWeight: FontWeight.bold,
           ),
         ),
         style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(buttonColor),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
+              borderRadius: BorderRadius.circular(borderRadius),
             ),
-          ),
-          backgroundColor: MaterialStateProperty.all(
-            buttonColor,
           ),
         ),
       ),

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:user_auth/common/method/methods.dart';
 
 class FirebaseNotification {
   FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
@@ -11,12 +12,12 @@ class FirebaseNotification {
   Future<void> sendNotification() async {
     await firebaseMessaging.requestPermission();
     FirebaseMessaging.onMessage.listen((RemoteMessage remoteMessage) {
-      print('Remote message Data : ${remoteMessage.data}');
+      logs('Remote message Data : ${remoteMessage.data}');
       if (remoteMessage.notification == null) {
-        print('It not contains notification.!');
+        logs('It not contains notification.!');
       } else {
-        print('It contains notification,${remoteMessage.notification.body}.!');
-        print('It contains notification,${remoteMessage.notification.title}.!');
+        logs('It contains notification,${remoteMessage.notification.body}.!');
+        logs('It contains notification,${remoteMessage.notification.title}.!');
       }
       showNotification(remoteMessage);
       return;
@@ -24,10 +25,10 @@ class FirebaseNotification {
   }
 
   AndroidNotificationChannel androidNotificationChannel =
-      AndroidNotificationChannel(
+      const AndroidNotificationChannel(
     'high_importance_channel',
     'High Importance Notifications',
-    'This channel is used for important notifications.',
+    description: 'This channel is used for important notifications.',
     importance: Importance.high,
   );
 
@@ -35,7 +36,7 @@ class FirebaseNotification {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       androidNotificationChannel.id,
       androidNotificationChannel.name,
-      androidNotificationChannel.description,
+      channelDescription: androidNotificationChannel.description,
       playSound: true,
       enableVibration: true,
       enableLights: true,
@@ -55,7 +56,7 @@ class FirebaseNotification {
 
   void configLocalNotification() {
     var initializationSettingsAndroid =
-        new AndroidInitializationSettings('@mipmap/ic_launcher');
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
@@ -65,10 +66,10 @@ class FirebaseNotification {
   Future<String> firebaseToken() async {
     try {
       var token = await firebaseMessaging.getToken();
-      print('Firebase Token : $token');
+      logs('Firebase Token : $token');
       return token;
     } on Exception catch (e) {
-      print('Catch error in Firebase Token : $e');
+      logs('Catch error in Firebase Token : $e');
       return '$e';
     }
   }

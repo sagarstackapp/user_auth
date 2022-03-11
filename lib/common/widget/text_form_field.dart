@@ -1,60 +1,90 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:user_auth/common/constant/color_res.dart';
 
-// ignore: must_be_immutable
 class CommonTextFormField extends StatelessWidget {
-  TextEditingController controller;
-  bool obscureText;
-  FormFieldValidator validator;
-  String hintText;
-  Color color;
-  bool autoFocus;
+  final TextEditingController controller;
+  final bool obscureText;
+  final FormFieldValidator<String> validator;
+  final List<TextInputFormatter> inputFormatters;
+  final String hintText;
+  final Color color;
+  final bool autoFocus;
+  final TextInputType keyboardType;
+  final IconData prefixIcon;
 
-    CommonTextFormField({
+  const CommonTextFormField({
+    Key key,
     @required this.controller,
+    @required this.hintText,
     this.obscureText = false,
     this.validator,
-    @required this.hintText,
     this.color,
     this.autoFocus = false,
-  });
+    this.inputFormatters,
+    this.keyboardType = TextInputType.text,
+    this.prefixIcon,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      autofocus: autoFocus ?? false,
-      keyboardType: TextInputType.emailAddress,
-      textAlign: TextAlign.start,
-      style: TextStyle(
-        fontSize: 18,
-        color: ColorResource.White,
-        wordSpacing: 1,
-        letterSpacing: 1,
-      ),
-      obscureText: obscureText,
-      validator: validator,
-      decoration: InputDecoration(
-        floatingLabelBehavior: FloatingLabelBehavior.auto,
-        border: InputBorder.none,
-        hintText: hintText,
-        hintStyle: TextStyle(
-          color: ColorResource.Grey,
-          fontSize: 15,
-          wordSpacing: 2,
+    return Container(
+      margin: const EdgeInsets.only(top: 18),
+      width: double.infinity,
+      child: TextFormField(
+        controller: controller,
+        autofocus: autoFocus,
+        keyboardType: keyboardType,
+        textAlign: TextAlign.start,
+        inputFormatters: inputFormatters,
+        obscureText: obscureText,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        style: const TextStyle(
+          fontSize: 18,
+          color: ColorResource.darkGreen,
+          wordSpacing: 1,
           letterSpacing: 1,
-          height: 3,
         ),
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: color ?? ColorResource.White),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: color ?? ColorResource.White),
+        validator: validator,
+        decoration: InputDecoration(
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+          hintText: hintText,
+          hintStyle: const TextStyle(
+            color: ColorResource.grey,
+            fontSize: 15,
+            wordSpacing: 2,
+            letterSpacing: 1,
+          ),
+          labelText: hintText,
+          labelStyle: const TextStyle(
+            color: ColorResource.grey,
+            fontSize: 15,
+            wordSpacing: 2,
+            letterSpacing: 1,
+          ),
+          prefixIcon: Icon(prefixIcon, color: ColorResource.darkGreen),
+          prefixIconColor: ColorResource.darkGreen,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24),
+            borderSide: const BorderSide(color: ColorResource.darkGreen),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24),
+            borderSide: const BorderSide(color: ColorResource.darkGreen),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24),
+            borderSide: const BorderSide(color: ColorResource.darkGreen),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24),
+            borderSide: const BorderSide(color: ColorResource.red),
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(30, -16, 0, 50),
+          suffixIconConstraints: const BoxConstraints(minWidth: 2),
+          isDense: true,
         ),
       ),
-
     );
   }
 }
-
-

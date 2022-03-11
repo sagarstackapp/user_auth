@@ -1,3 +1,5 @@
+import 'package:user_auth/common/method/methods.dart';
+
 class JokesResponse {
   final List<String> categories;
   final String createdAt;
@@ -32,17 +34,17 @@ class JokesResponse {
   }
 
   Map<String, dynamic> categoryMap() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['created_at'] = this.createdAt;
-    data['icon_url'] = this.iconUrl;
-    data['id'] = this.id;
-    data['updated_at'] = this.updatedAt;
-    data['url'] = this.url;
-    data['value'] = this.value;
-    if (this.categories == null) {
-      print('JokesCategory data null');
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['created_at'] = createdAt;
+    data['icon_url'] = iconUrl;
+    data['id'] = id;
+    data['updated_at'] = updatedAt;
+    data['url'] = url;
+    data['value'] = value;
+    if (categories == null) {
+      logs('JokesCategory data null');
     } else {
-      data['categories'] = this.categories;
+      data['categories'] = categories;
     }
     return data;
   }

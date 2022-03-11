@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/method/methods.dart';
+import 'package:user_auth/common/widget/common_app_bar.dart';
 import 'package:user_auth/common/widget/searchtile.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/page/conversation_page/conversation.dart';
@@ -12,6 +13,8 @@ import 'package:user_auth/services/firebase_messaging.dart';
 import 'package:user_auth/services/users_service.dart';
 
 class Search extends StatefulWidget {
+  const Search({Key key}) : super(key: key);
+
   @override
   SearchState createState() => SearchState();
 }
@@ -29,11 +32,12 @@ class SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unnecessary_statements
     searchViewModel ?? (searchViewModel = SearchViewModel(this));
     return Scaffold(
-      appBar: topMenuBar(context,
-          '${searchViewModel.userModel == null ? ' ' : '${searchViewModel.userModel.fname} ${searchViewModel.userModel.lname}\'s Chat Search'}'),
+      appBar: CommonAppBar(
+          title: searchViewModel.userModel == null
+              ? ' '
+              : '${searchViewModel.userModel.fname} ${searchViewModel.userModel.lname}\'s Chat Search'),
       body: searchingList(),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -41,7 +45,7 @@ class SearchState extends State<Search> {
           floatingButton(Icons.doorbell, () {
             goJokeCategory(context);
           }, 'Jokes Category'),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           floatingButton(Icons.logout, () {
             authService.userSignOut();
             goSignIn(context);
@@ -62,9 +66,9 @@ class SearchState extends State<Search> {
           shrinkWrap: true,
           itemCount: snapshot.data.docs.length,
           separatorBuilder: (context, index) {
-            return Divider(
+            return const Divider(
               height: 2,
-              color: ColorResource.White,
+              color: ColorResource.white,
             );
           },
           itemBuilder: (context, index) {
@@ -81,16 +85,16 @@ class SearchState extends State<Search> {
                       var senderFname = searchViewModel.userModel.fname;
                       var tokens = searchViewModel.userModel.token;
                       var token = snapshot.data.docs[index]['token'];
-                      print(' Sender ID : $sender');
-                      print(' Receiver ID : $receiver');
-                      print(' Sender name : $senderFname');
-                      print(' Receiver name : $receiverFname');
-                      print('Sender : $token');
-                      print('Receiver : $tokens');
+                      logs('Sender ID : $sender');
+                      logs('Receiver ID : $receiver');
+                      logs('Sender name : $senderFname');
+                      logs('Receiver name : $receiverFname');
+                      logs('Sender : $token');
+                      logs('Receiver : $tokens');
                       String roomId = sender.hashCode <= receiver.hashCode
                           ? '${sender}_$receiver'
                           : '${receiver}_$sender';
-                      print(' Room Id : $roomId');
+                      logs('Room Id : $roomId');
                       Navigator.push(
                         context,
                         MaterialPageRoute(

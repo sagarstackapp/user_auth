@@ -1,3 +1,5 @@
+import 'package:user_auth/common/method/methods.dart';
+
 class JokesCategories {
   final List<String> category;
 
@@ -13,10 +15,10 @@ class JokesCategories {
 
   List<dynamic> jokesMap() {
     List<dynamic> data = <String>[];
-    if (this.category == null) {
-      print('JokesCategory data null');
+    if (category == null) {
+      logs('JokesCategory data null');
     } else {
-      data = this.category;
+      data = category;
     }
     return data;
   }

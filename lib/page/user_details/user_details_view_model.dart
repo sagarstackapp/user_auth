@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/model/user_model.dart';
 import 'package:user_auth/page/user_details/user_details.dart';
 import 'package:user_auth/services/users_service.dart';
@@ -17,7 +18,7 @@ class UserDetailsViewModel {
   Future getUserDetails(String uid) async {
     var value = await userService.getCurrentDataUser(uid);
     if (value == null) {
-      print('View Model data is null');
+      logs('View Model data is null');
     } else {
       userModel = value;
     }

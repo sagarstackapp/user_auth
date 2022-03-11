@@ -1,216 +1,233 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sign_button/constants.dart';
 import 'package:sign_button/create_button.dart';
+import 'package:user_auth/common/app/shared_preference.dart';
 import 'package:user_auth/common/constant/color_res.dart';
+import 'package:user_auth/common/constant/image_res.dart';
 import 'package:user_auth/common/constant/string_res.dart';
 import 'package:user_auth/common/method/methods.dart';
+import 'package:user_auth/common/widget/common_image_assets.dart';
+import 'package:user_auth/common/widget/common_loader.dart';
+import 'package:user_auth/common/widget/elevated_button.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/model/user_model.dart';
+import 'package:user_auth/page/search/search_page.dart';
 import 'package:user_auth/services/auth_service.dart';
 import 'package:user_auth/services/users_service.dart';
 
 class SignIn extends StatefulWidget {
+  const SignIn({Key key}) : super(key: key);
+
   @override
-  _SignInState createState() => _SignInState();
+  SignInState createState() => SignInState();
 }
 
-class _SignInState extends State<SignIn> {
+class SignInState extends State<SignIn> {
   final signInFormKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
   AuthService authService = AuthService();
   UserService userService = UserService();
 
   @override
   Widget build(BuildContext context) {
-    print(runtimeType);
-    return SafeArea(
-      maintainBottomViewPadding: true,
-      child: Scaffold(
-        appBar: topMenuBar(context, '${StringResources.Title}'),
-        body: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+    logs('Current screen --> $runtimeType');
+    return Scaffold(
+      backgroundColor: ColorResource.white,
+      body: Stack(
+        children: [
+          ListView(
             children: [
-              titleText(StringResources.SignIn),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 50),
+                child: const CommonImageAsset(image: ImageResources.login),
+              ),
+              const Text(
+                'Welcome back!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'Log in your existent account',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: ColorResource.grey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 20),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                padding: const EdgeInsets.symmetric(horizontal: 14),
                 child: Form(
                   key: signInFormKey,
-                  child: signInForm(
-                    emailController,
-                    passwordController,
-                    goToForgotPassword,
-                    signUp,
-                    goToSignUp,
-                    context,
+                  child: Column(
+                    children: [
+                      email(emailController),
+                      password(passwordController),
+                    ],
                   ),
                 ),
               ),
+              const Padding(
+                padding: EdgeInsets.only(right: 14, top: 8),
+                child: Text(
+                  'Forgot Password?',
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: ColorResource.darkGreen,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              CommonElevatedButton(
+                text: 'Log in',
+                buttonColor: const Color(0xFF1A49A4),
+                textColor: ColorResource.white,
+                textSize: 16,
+                margin: 90,
+                onPressed: signInWithEmail,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Or connect using',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: ColorResource.grey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 50,
+                        child: SignInButton(
+                          buttonType: ButtonType.google,
+                          width: double.infinity,
+                          buttonSize: ButtonSize.small,
+                          btnColor: ColorResource.darkGreen,
+                          btnText: 'Google',
+                          btnTextColor: ColorResource.white,
+                          onPressed: signInWithGoogle,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      child: SizedBox(
+                        height: 50,
+                        child: SignInButton(
+                          buttonType: ButtonType.facebook,
+                          width: double.infinity,
+                          buttonSize: ButtonSize.small,
+                          btnColor: ColorResource.darkGreen,
+                          btnText: 'Facebook',
+                          btnTextColor: ColorResource.white,
+                          onPressed: signInWithFacebook,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
             ],
           ),
-        ),
+          isLoading ? const LoadingPage() : Container(),
+        ],
       ),
     );
   }
 
-  Widget signInForm(
-      TextEditingController emailController,
-      TextEditingController passwordController,
-      GestureTapCallback onTap,
-      VoidCallback onPressed,
-      GestureTapCallback headerTap,
-      BuildContext context) {
-    return ListView(
-      shrinkWrap: true,
-      primary: false,
-      children: [
-        email(emailController),
-        password(passwordController),
-        SizedBox(height: 20),
-        forgotPassword(onTap),
-        SizedBox(height: 30),
-        elevatedButton(StringResources.SignIn, onPressed),
-        SizedBox(height: 20),
-        textBody(StringResources.AccountRequest),
-        SizedBox(height: 10),
-        textHeader(headerTap, StringResources.SignInOption),
-        SizedBox(height: 10),
-        textBody('OR'),
-        google(context),
-        facebook(context),
-      ],
-    );
-  }
-
-  signUp() {
+  Future<void> signInWithEmail() async {
+    setState(() {
+      isLoading = true;
+    });
     final isValid = signInFormKey.currentState.validate();
-
     if (isValid) {
-      signInFormKey.currentState.save();
+      UserCredential userCredentials = await authService.verifyUser(
+          context, emailController.text, passwordController.text);
+      if (userCredentials != null) {
+        Fluttertoast.showToast(
+          msg: 'Hey, ${userCredentials.user.email}',
+          backgroundColor: ColorResource.lightGreen,
+          textColor: ColorResource.white,
+        );
+        appState.user = userCredentials.user;
+        logs('Current user details : ${appState.user}');
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const Search()),
+          (route) => false,
+        );
+      }
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
 
-      signInValidation(emailController, passwordController);
-    } else {
+  Future<void> signInWithGoogle() async {
+    setState(() {
+      isLoading = true;
+    });
+    UserCredential userCredential = await authService.signInWithGoogle(context);
+    if (userCredential != null) {
+      appState.user = userCredential.user;
       Fluttertoast.showToast(
-        msg: 'Enter valid details',
-        backgroundColor: ColorResource.Red,
-        textColor: ColorResource.White,
+        msg: 'Hey, ${appState.user.email}',
+        backgroundColor: ColorResource.lightGreen,
+        textColor: ColorResource.white,
+      );
+      logs('Current user details : ${appState.user}');
+      logs('Google User : ${userCredential.additionalUserInfo.profile}');
+      UserModel userDetails = UserModel(
+        email: userCredential.additionalUserInfo.profile['email'],
+        lname: userCredential.additionalUserInfo.profile['family_name'],
+        fname: userCredential.additionalUserInfo.profile['given_name'],
+        image: userCredential.additionalUserInfo.profile['picture'],
+        uid: userCredential.user.uid,
+        type: 'Google',
+      );
+      await userService.createUser(userDetails);
+      await setPrefBoolValue(isSocialLogin, true);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const Search()),
+        (route) => false,
       );
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
-  Future<void> signInValidation(TextEditingController emailController,
-      TextEditingController passwordController) async {
-    var userCredentials = await authService.verifyUser(
-        context, emailController.text, passwordController.text);
-    if (userCredentials != null) {
-      hideLoader(context);
-      Fluttertoast.showToast(
-        msg: 'Hey, ${userCredentials.user.email}',
-        backgroundColor: ColorResource.Orange,
-        textColor: ColorResource.White,
-      );
-      print('Current user details : ${userCredentials.user}');
-      // goToUserDetails();
-      goToSearch();
-    } else {
-      print('User Details are null');
-      Fluttertoast.showToast(
-        msg: 'Something went wrong.!',
-        backgroundColor: ColorResource.Orange,
-        textColor: ColorResource.White,
-      );
+  Future<void> signInWithFacebook() async {
+    setState(() {
+      isLoading = true;
+    });
+    UserCredential facebookLoginData =
+        await authService.signInWithFacebook(context);
+    if (facebookLoginData != null) {
+      appState.user = facebookLoginData.user;
+      logs('Current user details : ${appState.user}');
     }
-  }
-
-  Future<void> signInWithGoogle(BuildContext context) async {
-    var authResult = await authService.signInWithGoogle(context);
-    String googleUserId = authResult.user.uid.toString();
-    print('Google Created User User Id : $googleUserId');
-    print('Current GOOGLE USER : ${authResult.additionalUserInfo.profile}');
-    UserModel userDetails = UserModel(
-      email: authResult.additionalUserInfo.profile['email'],
-      lname: authResult.additionalUserInfo.profile['family_name'],
-      fname: authResult.additionalUserInfo.profile['given_name'],
-      image: authResult.additionalUserInfo.profile['picture'],
-      uid: authResult.user.uid,
-      type: 'Google',
-    );
-
-    // Response From Google
-    // AdditionalUserInfo(isNewUser: false, profile: {given_name: Sagar, locale: en-GB, family_name: Stackapp, picture: https://lh3.googleusercontent.com/a-/AOh14GhbQy7Z7p1OZg1fh_Fuhn98k-_vQWpY7JFpRZET=s96-c, aud: 17508847403-e70i2j76t12vnglbdmgpj275s7tg6adm.apps.googleusercontent.com, azp: 17508847403-ts2adlcaj5upuis3fk15bepcr4msanlu.apps.googleusercontent.com, exp: 1620971700, iat: 1620968100, iss: https://accounts.google.com, sub: 111037160002170854379, name: Sagar Stackapp, email: sagaranghan.stackapp@gmail.com, email_verified: true}, providerId: google.com, username: null)
-    await userService.createUser(userDetails);
-    goToSearch();
-    // goUserDetails(context);
-  }
-
-  Widget forgotPassword(GestureTapCallback onTap) {
-    return Container(
-      alignment: Alignment.centerRight,
-      child: InkWell(
-        onTap: onTap,
-        child: Text(
-          '${StringResources.ForgotPass}?',
-          style: TextStyle(
-            fontSize: 18,
-            color: ColorResource.White,
-            wordSpacing: 1,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget google(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: SignInButton(
-        buttonType: ButtonType.google,
-        width: double.infinity,
-        buttonSize: ButtonSize.large,
-        onPressed: () {
-          signInWithGoogle(context);
-        },
-      ),
-    );
-  }
-
-  Widget facebook(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: SignInButton(
-        buttonType: ButtonType.facebook,
-        width: double.infinity,
-        buttonSize: ButtonSize.large,
-        onPressed: () {
-          Fluttertoast.showToast(
-            msg: 'Implementation left',
-            backgroundColor: ColorResource.Red,
-            textColor: ColorResource.White,
-          );
-        },
-      ),
-    );
-  }
-
-  goToSignUp() {
-    goSignUp(context);
-    setState(() {});
-  }
-
-  goToForgotPassword() {
-    goForgotPassword(context);
-    setState(() {});
-  }
-
-  goToUserDetails() {
-    goUserDetails(context);
-    setState(() {});
-  }
-
-  goToSearch() {
-    goSearch(context);
-    setState(() {});
+    setState(() {
+      isLoading = false;
+    });
   }
 }

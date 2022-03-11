@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:user_auth/common/method/methods.dart';
 
 class ChatRoomService {
   final CollectionReference chatRoomCollection =
@@ -8,7 +9,7 @@ class ChatRoomService {
     try {
       await chatRoomCollection.doc(chatRoom).set(chatRoomModel);
     } catch (e) {
-      print('Catch error in Create ChatRoom : $e');
+      logs('Catch error in Create ChatRoom : $e');
     }
   }
 
@@ -16,7 +17,7 @@ class ChatRoomService {
     try {
       chatRoomCollection.doc(chatRoom).collection('Chats').add(data);
     } catch (e) {
-      print('Catch error in Add Conversation Message : $e');
+      logs('Catch error in Add Conversation Message : $e');
     }
   }
 
@@ -28,7 +29,7 @@ class ChatRoomService {
           .orderBy('Time')
           .snapshots();
     } catch (e) {
-      print('Catch error in Get Conversation Message : $e');
+      logs('Catch error in Get Conversation Message : $e');
     }
   }
 }

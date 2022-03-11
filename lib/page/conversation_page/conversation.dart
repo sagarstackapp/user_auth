@@ -1,15 +1,16 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/method/methods.dart';
+import 'package:user_auth/common/widget/common_app_bar.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/services/chatroom_service.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:user_auth/services/firebase_messaging.dart';
 import 'package:user_auth/services/notification_api.dart';
 
@@ -19,7 +20,9 @@ class Conversation extends StatefulWidget {
   final String receiver;
   final String token;
 
-  Conversation({this.chatRoomId, this.sender, this.receiver, this.token});
+  const Conversation(
+      {Key key, this.chatRoomId, this.sender, this.receiver, this.token})
+      : super(key: key);
 
   @override
   ConversationState createState() => ConversationState();
@@ -39,9 +42,7 @@ class ConversationState extends State<Conversation> {
 
   @override
   void initState() {
-    chatRoomService
-        .getConversationMessage('${widget.chatRoomId}')
-        .then((value) {
+    chatRoomService.getConversationMessage(widget.chatRoomId).then((value) {
       setState(() {
         senderChatStream = value;
       });
@@ -54,7 +55,7 @@ class ConversationState extends State<Conversation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: topMenuBar(context, '${widget.receiver}\'s Chat conversation'),
+      appBar: CommonAppBar(title: '${widget.receiver}\'s Chat conversation'),
       body: Column(
         children: [
           messageChatScreen(),
@@ -65,10 +66,10 @@ class ConversationState extends State<Conversation> {
   }
 
   Widget messageChatScreen() {
-    print('Sender ChatStream  : $senderChatStream');
+    logs('Sender ChatStream  : $senderChatStream');
     return Expanded(
       child: senderChatStream == null
-          ? Container(child: Text('Value coming null'))
+          ? const Text('Value coming null')
           : StreamBuilder(
               stream: senderChatStream,
               builder: (context, snapshots) {
@@ -119,14 +120,14 @@ class ConversationState extends State<Conversation> {
           ),
           child: Padding(
             padding: const EdgeInsets.all(15.0),
-            child: message.length <= 0
+            child: message.isEmpty
                 ? CachedNetworkImage(
                     imageUrl: src,
                     placeholder: loader,
                   )
                 : Text(
                     message,
-                    style: TextStyle(color: ColorResource.White),
+                    style: const TextStyle(color: ColorResource.white),
                   ),
           ),
         ),
@@ -136,7 +137,7 @@ class ConversationState extends State<Conversation> {
 
   galleryImage() async {
     try {
-      PickedFile images = await picker.getImage(
+      XFile images = await picker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 100,
       );
@@ -150,52 +151,50 @@ class ConversationState extends State<Conversation> {
             reference.putFile(File(images.path));
         showLoader(context);
         try {
-          await uploadTask
-              .whenComplete(() => print('Uploading Task Completed'));
+          await uploadTask.whenComplete(() => logs('Uploading Task Completed'));
         } catch (e) {
-          print('Catch error in Upload Image : $e');
+          logs('Catch error in Upload Image : $e');
         }
 
-        print('Before Image URL : $returnURL');
+        logs('Before Image URL : $returnURL');
 
         try {
           reference.getDownloadURL().then((value) => returnURL = value);
         } catch (e) {
-          print('Catch error in Download Image : $e');
+          logs('Catch error in Download Image : $e');
         }
-        print('After Image URL : $returnURL');
-        hideLoader(context);
+        logs('After Image URL : $returnURL');
         return returnURL;
       } else {
         Fluttertoast.showToast(
           msg: 'Please, Select image first',
-          backgroundColor: ColorResource.Red,
-          textColor: ColorResource.White,
+          backgroundColor: ColorResource.red,
+          textColor: ColorResource.white,
         );
       }
     } catch (e) {
-      print('Catch error in Gallery Image : $e');
+      logs('Catch error in Gallery Image : $e');
     }
   }
 
   sendMessageButton() async {
     // var token = await firebaseNotification.firebaseToken();
-    // print('Token Value : $token');
-    print('Received Chat Id : ${widget.chatRoomId}');
-    print('Return Url : $returnURL');
+    // logs('Token Value : $token');
+    logs('Received Chat Id : ${widget.chatRoomId}');
+    logs('Return Url : $returnURL');
     Map<String, String> chatRoomModel = {
-      'Message': '${messageController.text}',
-      'Image': '$returnURL',
-      'Sender': '${widget.sender}',
-      'Receiver': '${widget.receiver}',
-      'Time': '${DateTime.now().toString().split(' ')[1]}',
+      'Message': messageController.text,
+      'Image': returnURL,
+      'Sender': widget.sender,
+      'Receiver': widget.receiver,
+      'Time': DateTime.now().toString().split(' ')[1],
       'token': widget.token,
     };
-    if (messageController.text.length == 0 && returnURL == null) {
+    if (messageController.text.isEmpty && returnURL == null) {
       Fluttertoast.showToast(
         msg: 'Please, Type message first',
-        textColor: ColorResource.White,
-        backgroundColor: ColorResource.Red,
+        textColor: ColorResource.white,
+        backgroundColor: ColorResource.red,
       );
     } else {
       setState(() {});
@@ -212,7 +211,7 @@ class ConversationState extends State<Conversation> {
           Container(
             color: Colors.transparent,
           ),
-          Center(
+          const Center(
             child: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation(Colors.orange),
               strokeWidth: 2,
