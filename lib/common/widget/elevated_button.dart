@@ -18,7 +18,7 @@ class CommonElevatedButton extends StatelessWidget {
     this.onPressed,
     this.width,
     this.margin,
-    this.borderRadius = 30,
+    this.borderRadius = 10,
     this.textSize = 20,
   }) : super(key: key);
 

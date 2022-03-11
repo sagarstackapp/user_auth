@@ -14,6 +14,7 @@ import 'package:user_auth/common/widget/elevated_button.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/model/user_model.dart';
 import 'package:user_auth/page/search/search_page.dart';
+import 'package:user_auth/page/sign_up/sign_up.dart';
 import 'package:user_auth/services/auth_service.dart';
 import 'package:user_auth/services/users_service.dart';
 
@@ -89,13 +90,40 @@ class SignInState extends State<SignIn> {
                 ),
               ),
               const SizedBox(height: 20),
-              CommonElevatedButton(
-                text: 'Log in',
-                buttonColor: const Color(0xFF1A49A4),
-                textColor: ColorResource.white,
-                textSize: 16,
-                margin: 90,
-                onPressed: signInWithEmail,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: CommonElevatedButton(
+                        text: 'Log in',
+                        buttonColor: const Color(0xFF1A49A4),
+                        textColor: ColorResource.white,
+                        textSize: 16,
+                        margin: 0,
+                        onPressed: signInWithEmail,
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      child: CommonElevatedButton(
+                        text: 'Sign Up',
+                        buttonColor: const Color(0xFF1A49A4),
+                        textColor: ColorResource.white,
+                        textSize: 16,
+                        margin: 0,
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignUp()),
+                            (route) => false,
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
               const Text(
