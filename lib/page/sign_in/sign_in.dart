@@ -16,6 +16,7 @@ import 'package:user_auth/model/user_model.dart';
 import 'package:user_auth/page/search/search_page.dart';
 import 'package:user_auth/page/sign_up/sign_up.dart';
 import 'package:user_auth/services/auth_service.dart';
+import 'package:user_auth/services/firebase_messaging.dart';
 import 'package:user_auth/services/users_service.dart';
 
 class SignIn extends StatefulWidget {
@@ -32,6 +33,7 @@ class SignInState extends State<SignIn> {
   bool isLoading = false;
   AuthService authService = AuthService();
   UserService userService = UserService();
+  FirebaseNotification firebaseNotification = FirebaseNotification();
 
   @override
   Widget build(BuildContext context) {
@@ -185,8 +187,7 @@ class SignInState extends State<SignIn> {
     setState(() {
       isLoading = true;
     });
-    final isValid = signInFormKey.currentState.validate();
-    if (isValid) {
+    if (signInFormKey.currentState.validate()) {
       UserCredential userCredentials = await authService.verifyUser(
           context, emailController.text, passwordController.text);
       if (userCredentials != null) {
@@ -223,12 +224,14 @@ class SignInState extends State<SignIn> {
       );
       logs('Current user details : ${appState.user}');
       logs('Google User : ${userCredential.additionalUserInfo.profile}');
+      String token = await firebaseNotification.firebaseToken();
       UserModel userDetails = UserModel(
         email: userCredential.additionalUserInfo.profile['email'],
-        lname: userCredential.additionalUserInfo.profile['family_name'],
-        fname: userCredential.additionalUserInfo.profile['given_name'],
+        lastName: userCredential.additionalUserInfo.profile['family_name'],
+        firstName: userCredential.additionalUserInfo.profile['given_name'],
         image: userCredential.additionalUserInfo.profile['picture'],
         uid: userCredential.user.uid,
+        token: token,
         type: 'Google',
       );
       await userService.createUser(userDetails);

@@ -14,6 +14,22 @@ class UserService {
     }
   }
 
+  Future<List<UserModel>> getAllUsers() async {
+    try {
+      List<UserModel> allUsers = [];
+      QuerySnapshot querySnapshot = await userCollection.get();
+      for (var element in querySnapshot.docs) {
+        Map<String, dynamic> map = element.data() as Map<String, dynamic>;
+        UserModel categoryModel = UserModel.fromMap(map);
+        allUsers.add(categoryModel);
+      }
+      return allUsers;
+    } catch (e) {
+      logs('Catch error in Get All Users : $e');
+      return null;
+    }
+  }
+
   Future<UserModel> getCurrentDataUser(String uid) async {
     try {
       DocumentSnapshot doc = await userCollection.doc(uid).get();

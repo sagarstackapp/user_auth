@@ -15,18 +15,18 @@ class CommonImageAsset extends StatelessWidget {
   final Color color;
   final bool isWebImage;
 
-  const CommonImageAsset(
-      {Key key,
-      this.image,
-      this.webFit,
-      this.fit,
-      this.height,
-      this.webHeight,
-      this.width,
-      this.webWidth,
-      this.color,
-      this.isWebImage = false})
-      : super(key: key);
+  const CommonImageAsset({
+    Key key,
+    this.image,
+    this.webFit = BoxFit.cover,
+    this.fit,
+    this.height,
+    this.webHeight,
+    this.width,
+    this.webWidth,
+    this.color,
+    this.isWebImage = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class CommonImageAsset extends StatelessWidget {
             imageUrl: image,
             height: webHeight,
             width: webWidth,
-            fit: webFit ?? BoxFit.cover,
+            fit: webFit,
             placeholder: (context, url) => const LoadingPage(),
             errorWidget: (context, url, error) => const CommonImageAsset(
               image: ImageResources.avatar,

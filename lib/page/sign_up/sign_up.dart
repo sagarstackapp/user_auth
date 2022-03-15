@@ -28,11 +28,11 @@ class SignUpState extends State<SignUp> {
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController cPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   AuthService authService = AuthService();
   UserService userService = UserService();
   FirebaseNotification firebaseNotification = FirebaseNotification();
-  String token;
   bool isLoading = false;
 
   @override
@@ -66,7 +66,8 @@ class SignUpState extends State<SignUp> {
                       name(lastNameController, 'Enter last name'),
                       email(emailController),
                       password(passwordController),
-                      confirmPassword(passwordController, cPasswordController),
+                      confirmPassword(
+                          passwordController, confirmPasswordController),
                     ],
                   ),
                 ),
@@ -129,8 +130,8 @@ class SignUpState extends State<SignUp> {
         logs('Token Value --> $token');
         UserModel userDetails = UserModel(
           uid: userCredential.user.uid,
-          fname: firstNameController.text,
-          lname: lastNameController.text,
+          firstName: firstNameController.text,
+          lastName: lastNameController.text,
           email: userCredential.user.email,
           token: token,
           type: 'Firebase',
@@ -138,8 +139,7 @@ class SignUpState extends State<SignUp> {
         logs('UserDetails --> ${userDetails.userMap()}');
         await userService.createUser(userDetails);
         Fluttertoast.showToast(
-          msg:
-              '${userCredential.user.displayName}\'s account created successfully..!',
+          msg: '${firstNameController.text}\'s account created successfully..!',
           backgroundColor: ColorResource.orange,
           textColor: ColorResource.white,
         );

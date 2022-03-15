@@ -1,15 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:user_auth/common/constant/color_res.dart';
+import 'package:user_auth/common/constant/string_res.dart';
 import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/common/widget/common_app_bar.dart';
-import 'package:user_auth/common/widget/searchtile.dart';
+import 'package:user_auth/common/widget/common_image_assets.dart';
+import 'package:user_auth/common/widget/common_loader.dart';
 import 'package:user_auth/common/widget/widget.dart';
-import 'package:user_auth/page/conversation_page/conversation.dart';
+import 'package:user_auth/model/user_model.dart';
 import 'package:user_auth/page/search/search_view_model.dart';
 import 'package:user_auth/services/auth_service.dart';
-import 'package:user_auth/services/chatroom_service.dart';
-import 'package:user_auth/services/firebase_messaging.dart';
 import 'package:user_auth/services/users_service.dart';
 
 class Search extends StatefulWidget {
@@ -20,14 +19,8 @@ class Search extends StatefulWidget {
 }
 
 class SearchState extends State<Search> {
-  TextEditingController firstnameController = TextEditingController();
-  final ScrollController scrollController = ScrollController();
-  final CollectionReference userCollection =
-      FirebaseFirestore.instance.collection('users');
   AuthService authService = AuthService();
   UserService userService = UserService();
-  FirebaseNotification firebaseNotification = FirebaseNotification();
-  ChatRoomService chatRoomService = ChatRoomService();
   SearchViewModel searchViewModel;
 
   @override
@@ -35,10 +28,12 @@ class SearchState extends State<Search> {
     searchViewModel ?? (searchViewModel = SearchViewModel(this));
     return Scaffold(
       appBar: CommonAppBar(
-          title: searchViewModel.userModel == null
-              ? ' '
-              : '${searchViewModel.userModel.fname} ${searchViewModel.userModel.lname}\'s Chat Search'),
-      body: searchingList(),
+        title: searchViewModel.userModel == null
+            ? ' '
+            : '${searchViewModel.userModel.firstName} ${searchViewModel.userModel.lastName}\'s Chat',
+        isHome: true,
+      ),
+      body: usersList(),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -55,61 +50,72 @@ class SearchState extends State<Search> {
     );
   }
 
-  Widget searchingList() {
-    return StreamBuilder(
-      stream: userCollection.snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return showAPILoader(context);
-        }
-        return ListView.separated(
-          shrinkWrap: true,
-          itemCount: snapshot.data.docs.length,
-          separatorBuilder: (context, index) {
-            return const Divider(
-              height: 2,
-              color: ColorResource.white,
-            );
-          },
-          itemBuilder: (context, index) {
-            return searchViewModel.userModel.uid ==
-                    snapshot.data.docs[index]['uid']
-                ? Container()
-                : SearchTile(
-                    title: snapshot.data.docs[index]['fname'],
-                    email: snapshot.data.docs[index]['email'],
-                    onPressed: () async {
-                      var sender = searchViewModel.userModel.uid;
-                      var receiver = snapshot.data.docs[index]['uid'];
-                      var receiverFname = snapshot.data.docs[index]['fname'];
-                      var senderFname = searchViewModel.userModel.fname;
-                      var tokens = searchViewModel.userModel.token;
-                      var token = snapshot.data.docs[index]['token'];
-                      logs('Sender ID : $sender');
-                      logs('Receiver ID : $receiver');
-                      logs('Sender name : $senderFname');
-                      logs('Receiver name : $receiverFname');
-                      logs('Sender : $token');
-                      logs('Receiver : $tokens');
-                      String roomId = sender.hashCode <= receiver.hashCode
-                          ? '${sender}_$receiver'
-                          : '${receiver}_$sender';
-                      logs('Room Id : $roomId');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Conversation(
-                            chatRoomId: roomId,
-                            sender: senderFname,
-                            receiver: receiverFname,
-                            token: token,
+  FutureBuilder usersList() {
+    return FutureBuilder<List<UserModel>>(
+      future: userService.getAllUsers(),
+      builder: (BuildContext context, AsyncSnapshot<List<UserModel>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: LoadingPage());
+        } else if (snapshot.connectionState == ConnectionState.active ||
+            snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            return const Center(child: Text('Something went wrong'));
+          } else if (snapshot.hasData) {
+            return snapshot.data.isEmpty
+                ? const Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 200),
+                      child: Text('No user available for now'),
+                    ),
+                  )
+                : ListView.separated(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      if (appState.user.uid == snapshot.data[index].uid) {
+                        return const SizedBox();
+                      }
+                      return Card(
+                        margin: const EdgeInsets.all(10),
+                        elevation: 10,
+                        shadowColor: ColorResource.grey,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          child: ListTile(
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: CommonImageAsset(
+                                image: snapshot.data[index].image,
+                                isWebImage: true,
+                                webHeight: 40,
+                                webWidth: 40,
+                              ),
+                            ),
+                            title: Text(
+                              '${snapshot.data[index].firstName ?? ''} ${snapshot.data[index].lastName ?? ''}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
                           ),
                         ),
                       );
                     },
+                    separatorBuilder: (context, index) {
+                      return const Divider(
+                        height: 2,
+                        color: ColorResource.white,
+                      );
+                    },
                   );
-          },
-        );
+          } else {
+            return const Text('No Users Found');
+          }
+        } else {
+          return Center(child: Text(snapshot.connectionState.name));
+        }
       },
     );
   }

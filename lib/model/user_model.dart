@@ -1,8 +1,8 @@
 class UserModel {
   String uid;
   String email;
-  String fname;
-  String lname;
+  String firstName;
+  String lastName;
   String image;
   String token;
   String type;
@@ -11,8 +11,8 @@ class UserModel {
   UserModel({
     this.uid,
     this.email,
-    this.fname,
-    this.lname,
+    this.firstName,
+    this.lastName,
     this.image,
     this.token,
     this.type,
@@ -22,8 +22,8 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> map) => UserModel(
         uid: map['uid'],
         email: map['email'],
-        fname: map['fname'],
-        lname: map['lname'],
+        firstName: map['firstName'],
+        lastName: map['lastName'],
         image: map['image'],
         token: map['token'],
         type: map['type'],
@@ -34,8 +34,8 @@ class UserModel {
     return {
       'uid': uid,
       'email': email,
-      'fname': fname,
-      'lname': lname,
+      'firstName': firstName,
+      'lastName': lastName,
       'image': image,
       'token': token,
       'type': type,

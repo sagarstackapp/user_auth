@@ -52,6 +52,7 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           scaffoldBackgroundColor: ColorResource.darkGreen,
+          fontFamily: 'Ubuntu',
           appBarTheme: const AppBarTheme(
             centerTitle: true,
             color: ColorResource.darkGreen,

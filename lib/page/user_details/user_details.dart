@@ -33,7 +33,7 @@ class UserDetailsState extends State<UserDetails> {
         appBar: CommonAppBar(
             title: userDetailsViewModel.userModel == null
                 ? ' '
-                : '${userDetailsViewModel.userModel.fname}\'s ${StringResources.title}'),
+                : '${userDetailsViewModel.userModel.firstName}\'s ${StringResources.title}'),
         body: userDetailsViewModel.userModel == null
             ? const Center(
                 child: CircularProgressIndicator(
@@ -86,7 +86,7 @@ class UserDetailsState extends State<UserDetails> {
               ),
             ),
             Text(
-              '${userDetailsViewModel.userModel.fname} ${userDetailsViewModel.userModel.lname}',
+              '${userDetailsViewModel.userModel.firstName} ${userDetailsViewModel.userModel.lastName}',
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 30,
