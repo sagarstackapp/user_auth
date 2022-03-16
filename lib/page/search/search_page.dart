@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/constant/string_res.dart';
-import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/common/widget/common_app_bar.dart';
 import 'package:user_auth/common/widget/common_image_assets.dart';
 import 'package:user_auth/common/widget/common_loader.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/model/user_model.dart';
+import 'package:user_auth/page/conversation_page/conversation.dart';
+import 'package:user_auth/page/jokes/jokes_category.dart';
 import 'package:user_auth/page/search/search_view_model.dart';
+import 'package:user_auth/page/sign_in/sign_in.dart';
 import 'package:user_auth/services/auth_service.dart';
 import 'package:user_auth/services/users_service.dart';
 
@@ -37,14 +39,18 @@ class SearchState extends State<Search> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          floatingButton(Icons.doorbell, () {
-            goJokeCategory(context);
-          }, 'Jokes Category'),
+          floatingButton(
+            Icons.doorbell,
+            'Jokes Category',
+            () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const JokeCategory())),
+          ),
           const SizedBox(height: 10),
-          floatingButton(Icons.logout, () {
-            authService.userSignOut();
-            goSignIn(context);
-          }, 'LogOut'),
+          floatingButton(
+            Icons.logout,
+            'LogOut',
+            () => logOut,
+          ),
         ],
       ),
     );
@@ -76,20 +82,44 @@ class SearchState extends State<Search> {
                       if (appState.user.uid == snapshot.data[index].uid) {
                         return const SizedBox();
                       }
-                      return Card(
-                        margin: const EdgeInsets.all(10),
-                        elevation: 10,
-                        shadowColor: ColorResource.grey,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                      return GestureDetector(
+                        onTap: () {
+                          String roomId = searchViewModel
+                                      .userModel.uid.hashCode <=
+                                  snapshot.data[index].uid.hashCode
+                              ? '${searchViewModel.userModel.uid}_${snapshot.data[index].uid}'
+                              : '${snapshot.data[index].uid}_${searchViewModel.userModel.uid}';
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Conversation(
+                                sender: appState.user.displayName,
+                                receiver:
+                                    '${snapshot.data[index].firstName} ${snapshot.data[index].lastName}',
+                                token: snapshot.data[index].token,
+                                chatRoomId: roomId,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          margin: const EdgeInsets.all(10),
+                          elevation: 10,
+                          shadowColor: ColorResource.grey,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 10),
+                            minLeadingWidth: 0,
                             leading: ClipRRect(
                               borderRadius: BorderRadius.circular(50),
                               child: CommonImageAsset(
                                 image: snapshot.data[index].image,
                                 isWebImage: true,
-                                webHeight: 40,
-                                webWidth: 40,
+                                webHeight: 50,
+                                webWidth: 50,
                               ),
                             ),
                             title: Text(
@@ -104,6 +134,9 @@ class SearchState extends State<Search> {
                       );
                     },
                     separatorBuilder: (context, index) {
+                      if (appState.user.uid == snapshot.data[index].uid) {
+                        return const SizedBox();
+                      }
                       return const Divider(
                         height: 2,
                         color: ColorResource.white,
@@ -117,6 +150,15 @@ class SearchState extends State<Search> {
           return Center(child: Text(snapshot.connectionState.name));
         }
       },
+    );
+  }
+
+  void logOut() {
+    authService.userSignOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const SignIn()),
+      (route) => false,
     );
   }
 }

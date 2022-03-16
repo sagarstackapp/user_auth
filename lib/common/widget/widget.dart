@@ -107,6 +107,7 @@ Widget typeMessageField(TextEditingController controller) {
   return CommonTextFormField(
     controller: controller,
     hintText: 'Type a message...',
+    fontColor: ColorResource.white,
     validator: (value) {
       if (value.isEmpty) {
         return 'Message can\'t be empty!';
@@ -193,7 +194,7 @@ Widget showAPILoader(BuildContext context) {
   );
 }
 
-Widget floatingButton(IconData icon, VoidCallback onPreses, String heroTag) {
+Widget floatingButton(IconData icon, String heroTag, VoidCallback onPreses) {
   return FloatingActionButton(
     child: Icon(icon),
     onPressed: onPreses,

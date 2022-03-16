@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:user_auth/common/constant/color_res.dart';
-import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/common/widget/common_app_bar.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/model/jokes_category.dart';
+import 'package:user_auth/page/sign_in/sign_in.dart';
 import 'package:user_auth/providers/jokes_category.dart';
 import 'package:user_auth/services/auth_service.dart';
 
@@ -85,13 +85,13 @@ class _JokeCategoryState extends State<JokeCategory> {
         child: const Icon(Icons.exit_to_app_outlined),
         onPressed: () {
           authService.userSignOut();
-          goToSignIn(context);
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const SignIn()),
+            (route) => false,
+          );
         },
       ),
     );
-  }
-
-  goToSignIn(BuildContext context) {
-    goSignIn(context);
   }
 }

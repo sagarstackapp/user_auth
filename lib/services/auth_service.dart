@@ -78,7 +78,6 @@ class AuthService {
   //     ======================= Forgot Password =======================     //
   forgotPassword(BuildContext context, String email) async {
     try {
-      showLoader(context);
       await firebaseAuth.sendPasswordResetEmail(email: email);
     } catch (e) {
       logs('Catch error in Verify User : $e');

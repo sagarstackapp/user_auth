@@ -1,32 +1,46 @@
-class ChatRoomModel {
-  String roomId;
-  String message;
-  String image;
-  String type;
-  String time;
+// To parse this JSON data, do
+//
+//     final chatRoomModel = chatRoomModelFromJson(jsonString);
 
+import 'dart:convert';
+
+ChatRoomModel chatRoomModelFromJson(String str) =>
+    ChatRoomModel.fromJson(json.decode(str));
+
+String chatRoomModelToJson(ChatRoomModel data) => json.encode(data.toJson());
+
+class ChatRoomModel {
   ChatRoomModel({
-    this.roomId,
-    this.message,
     this.image,
-    this.type,
+    this.message,
+    this.receiver,
+    this.sender,
     this.time,
+    this.token,
   });
 
-  factory ChatRoomModel.fromMap(Map<String, dynamic> map) => ChatRoomModel(
-        roomId: map['roomId'],
-        message: map['fname'],
-        image: map['image'],
-        type: map['type'],
-        time: map['time'],
+  String image;
+  String message;
+  String receiver;
+  String sender;
+  String time;
+  String token;
+
+  factory ChatRoomModel.fromJson(Map<String, dynamic> json) => ChatRoomModel(
+        image: json["image"],
+        message: json["message"],
+        receiver: json["receiver"],
+        sender: json["sender"],
+        time: json["time"],
+        token: json["token"],
       );
 
-  Map<String, dynamic> chatMap() {
-    return {
-      'message': message,
-      'image': image,
-      'type': type,
-      'time': time,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        "image": image,
+        "message": message,
+        "receiver": receiver,
+        "sender": sender,
+        "time": time,
+        "token": token,
+      };
 }

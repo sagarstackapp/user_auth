@@ -9,6 +9,7 @@ class CommonTextFormField extends StatelessWidget {
   final List<TextInputFormatter> inputFormatters;
   final String hintText;
   final Color color;
+  final Color fontColor;
   final bool autoFocus;
   final TextInputType keyboardType;
   final IconData prefixIcon;
@@ -20,6 +21,7 @@ class CommonTextFormField extends StatelessWidget {
     this.obscureText = false,
     this.validator,
     this.color,
+    this.fontColor = ColorResource.darkGreen,
     this.autoFocus = false,
     this.inputFormatters,
     this.keyboardType = TextInputType.text,
@@ -39,9 +41,9 @@ class CommonTextFormField extends StatelessWidget {
         inputFormatters: inputFormatters,
         obscureText: obscureText,
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 18,
-          color: ColorResource.darkGreen,
+          color: fontColor,
           wordSpacing: 1,
           letterSpacing: 1,
         ),

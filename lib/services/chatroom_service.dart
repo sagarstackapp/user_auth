@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:user_auth/common/method/methods.dart';
+import 'package:user_auth/model/chat_room_model.dart';
 
 class ChatRoomService {
   final CollectionReference chatRoomCollection =
@@ -13,23 +14,31 @@ class ChatRoomService {
     }
   }
 
-  addConversationMessage(String chatRoom, data) {
+  addConversationMessage(String chatRoom, ChatRoomModel data) {
     try {
-      chatRoomCollection.doc(chatRoom).collection('Chats').add(data);
+      chatRoomCollection.doc(chatRoom).collection('Chats').add(data.toJson());
     } catch (e) {
       logs('Catch error in Add Conversation Message : $e');
     }
   }
 
-  getConversationMessage(String chatRoom) async {
+  Future<List<ChatRoomModel>> getConversationMessage(String chatRoom) async {
     try {
-      return chatRoomCollection
+      List<ChatRoomModel> allChats = [];
+      QuerySnapshot querySnapshot = await chatRoomCollection
           .doc(chatRoom)
           .collection('Chats')
-          .orderBy('Time')
-          .snapshots();
+          .orderBy('time')
+          .get();
+      for (var element in querySnapshot.docs) {
+        Map<String, dynamic> map = element.data() as Map<String, dynamic>;
+        ChatRoomModel chatRoomModel = ChatRoomModel.fromJson(map);
+        allChats.add(chatRoomModel);
+      }
+      return allChats;
     } catch (e) {
       logs('Catch error in Get Conversation Message : $e');
+      return null;
     }
   }
 }

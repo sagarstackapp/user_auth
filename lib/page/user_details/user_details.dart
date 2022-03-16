@@ -7,6 +7,7 @@ import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/common/widget/common_app_bar.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/page/jokes/jokes_category.dart';
+import 'package:user_auth/page/sign_in/sign_in.dart';
 import 'package:user_auth/page/user_details/user_details_view_model.dart';
 import 'package:user_auth/services/auth_service.dart';
 
@@ -44,15 +45,16 @@ class UserDetailsState extends State<UserDetails> {
               )
             : userDetails(),
         floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add_alert),
-          onPressed: goToJokerCategory,
+          child: const Icon(Icons.celebration_outlined),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const JokeCategory()),
+            );
+          },
         ),
       ),
     );
-  }
-
-  goToSignIn() {
-    goSignIn(context);
   }
 
   Widget userDetails() {
@@ -95,20 +97,22 @@ class UserDetailsState extends State<UserDetails> {
               ),
             ),
             const SizedBox(height: 20),
-            elevatedButton('LogOut', () {
-              logs('Log Out');
-              authService.userSignOut();
-              goToSignIn();
-            }),
+            elevatedButton(
+              'LogOut',
+              () => logOut,
+            ),
           ],
         ),
       ),
     );
   }
 
-  goToJokerCategory() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => const JokeCategory()));
-    setState(() {});
+  logOut() {
+    authService.userSignOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const SignIn()),
+      (route) => false,
+    );
   }
 }
