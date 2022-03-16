@@ -7,7 +7,7 @@ import 'package:user_auth/common/widget/common_loader.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/model/user_model.dart';
 import 'package:user_auth/page/conversation_page/conversation.dart';
-import 'package:user_auth/page/jokes/jokes_category.dart';
+import 'package:user_auth/page/jokes/jokes_category/jokes_category.dart';
 import 'package:user_auth/page/search/search_view_model.dart';
 import 'package:user_auth/page/sign_in/sign_in.dart';
 import 'package:user_auth/services/auth_service.dart';
@@ -40,7 +40,7 @@ class SearchState extends State<Search> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           floatingButton(
-            Icons.doorbell,
+            Icons.celebration_outlined,
             'Jokes Category',
             () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const JokeCategory())),

@@ -14,7 +14,7 @@ class JokesProvider extends ChangeNotifier {
 
   Future<JokesResponse> fetchJokes(String category) async {
     try {
-      String url = UrlResource.baseUrl + 'random?category=' + category;
+      String url = StringResources.baseUrl + 'random?category=' + category;
       logs('Requested Url : $url');
       logs('Selected category : $category');
       final response = await http.get(Uri.parse(url));

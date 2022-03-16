@@ -1,42 +1,31 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:user_auth/common/constant/color_res.dart';
+import 'package:http/http.dart';
 import 'package:user_auth/common/constant/string_res.dart';
 import 'package:user_auth/common/method/methods.dart';
-import 'package:user_auth/model/jokes_category.dart';
 
-class JokesCategory extends ChangeNotifier {
-  JokesCategories jokesCategories;
+List<String> jokesCategoryModelFromJson(String str) =>
+    List<String>.from(json.decode(str).map((x) => x));
 
-  Future<JokesCategories> fetchJokesCategory() async {
+class JokesCategoryProvider extends ChangeNotifier {
+  List<String> categoryList = [];
+
+  Future<List<String>> fetchJokesCategory() async {
     try {
-      String url = UrlResource.baseUrl + 'categories';
-      logs('Requested Url : $url');
-      final response = await http.post(Uri.parse(url));
-      logs('StatusCodes : ${response.statusCode}');
+      String url = '${StringResources.baseUrl}/categories';
+      logs('Url --> $url');
+      Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
-        var responseJson = json.decode(response.body);
-        logs('Jokes Category : ${response.body}');
-        Fluttertoast.showToast(
-          msg: '${response.statusCode}',
-          textColor: ColorResource.white,
-          backgroundColor: ColorResource.orange,
-        );
-        jokesCategories = JokesCategories.fromJson(responseJson);
-        return JokesCategories.fromJson(responseJson);
+        logs('Jokes Category --> ${response.body}');
+        return jokesCategoryModelFromJson(response.body);
       } else {
-        Fluttertoast.showToast(
-          msg: '${response.statusCode}',
-          textColor: ColorResource.white,
-          backgroundColor: ColorResource.red,
-        );
+        logs('Response StatusCode --> ${response.statusCode}');
         return null;
       }
-    } catch (e) {
-      logs('Catch error in Fetching Jokes Category : $e');
+    } on ClientException catch (e) {
+      logs('Catch error in Fetching Jokes Category --> ${e.message}');
       return null;
     }
   }

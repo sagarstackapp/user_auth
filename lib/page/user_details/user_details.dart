@@ -6,7 +6,7 @@ import 'package:user_auth/common/constant/string_res.dart';
 import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/common/widget/common_app_bar.dart';
 import 'package:user_auth/common/widget/widget.dart';
-import 'package:user_auth/page/jokes/jokes_category.dart';
+import 'package:user_auth/page/jokes/jokes_category/jokes_category.dart';
 import 'package:user_auth/page/sign_in/sign_in.dart';
 import 'package:user_auth/page/user_details/user_details_view_model.dart';
 import 'package:user_auth/services/auth_service.dart';

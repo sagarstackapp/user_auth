@@ -5,9 +5,8 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:user_auth/common/constant/string_res.dart';
 import 'package:user_auth/model/user_model.dart';
+import 'package:user_auth/page/search/search_page.dart';
 import 'package:user_auth/services/users_service.dart';
-
-import 'search_page.dart';
 
 class SearchViewModel {
   SearchState searchState;

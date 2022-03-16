@@ -35,7 +35,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   List<SingleChildWidget> providers = [
-    ChangeNotifierProvider<JokesCategory>(create: (context) => JokesCategory()),
+    ChangeNotifierProvider<JokesCategoryProvider>(
+        create: (context) => JokesCategoryProvider()),
     ChangeNotifierProvider<JokesProvider>(create: (context) => JokesProvider()),
   ];
 
