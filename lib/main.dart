@@ -5,13 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:user_auth/common/app/shared_preference.dart';
+import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/page/search/search_page.dart';
 import 'package:user_auth/page/sign_in/sign_in.dart';
-import 'package:user_auth/providers/jokes_provider.dart';
-
-import 'common/constant/color_res.dart';
-import 'providers/jokes_category.dart';
+import 'package:user_auth/rest_api/jokes_category.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +35,6 @@ class _MyAppState extends State<MyApp> {
   List<SingleChildWidget> providers = [
     ChangeNotifierProvider<JokesCategoryProvider>(
         create: (context) => JokesCategoryProvider()),
-    ChangeNotifierProvider<JokesProvider>(create: (context) => JokesProvider()),
   ];
 
   @override

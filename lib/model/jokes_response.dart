@@ -1,14 +1,15 @@
-import 'package:user_auth/common/method/methods.dart';
+// To parse this JSON data, do
+//
+//     final jokesResponse = jokesResponseFromJson(jsonString);
+
+import 'dart:convert';
+
+JokesResponse jokesResponseFromJson(String str) =>
+    JokesResponse.fromJson(json.decode(str));
+
+String jokesResponseToJson(JokesResponse data) => json.encode(data.toJson());
 
 class JokesResponse {
-  final List<String> categories;
-  final String createdAt;
-  final String iconUrl;
-  final String id;
-  final String updatedAt;
-  final String url;
-  final String value;
-
   JokesResponse({
     this.categories,
     this.createdAt,
@@ -19,33 +20,31 @@ class JokesResponse {
     this.value,
   });
 
-  factory JokesResponse.fromJson(Map<String, dynamic> responseList) {
-    return JokesResponse(
-      categories: responseList['categories'] == null
-          ? null
-          : List<String>.from(responseList['categories']),
-      createdAt: responseList['created_at'] ?? 'NULL',
-      iconUrl: responseList['icon_url'] ?? 'NULL',
-      id: responseList['id'] ?? 'NULL',
-      updatedAt: responseList['updated_at'] ?? 'NULL',
-      url: responseList['url'] ?? 'NULL',
-      value: responseList['value'] ?? 'NULL',
-    );
-  }
+  final List<String> categories;
+  final DateTime createdAt;
+  final String iconUrl;
+  final String id;
+  final DateTime updatedAt;
+  final String url;
+  final String value;
 
-  Map<String, dynamic> categoryMap() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['created_at'] = createdAt;
-    data['icon_url'] = iconUrl;
-    data['id'] = id;
-    data['updated_at'] = updatedAt;
-    data['url'] = url;
-    data['value'] = value;
-    if (categories == null) {
-      logs('JokesCategory data null');
-    } else {
-      data['categories'] = categories;
-    }
-    return data;
-  }
+  factory JokesResponse.fromJson(Map<String, dynamic> json) => JokesResponse(
+        categories: List<String>.from(json["categories"].map((x) => x)),
+        createdAt: DateTime.parse(json["created_at"]),
+        iconUrl: json["icon_url"],
+        id: json["id"],
+        updatedAt: DateTime.parse(json["updated_at"]),
+        url: json["url"],
+        value: json["value"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "categories": List<dynamic>.from(categories.map((x) => x)),
+        "created_at": createdAt.toIso8601String(),
+        "icon_url": iconUrl,
+        "id": id,
+        "updated_at": updatedAt.toIso8601String(),
+        "url": url,
+        "value": value,
+      };
 }

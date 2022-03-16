@@ -1,7 +1,7 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
 
 import 'package:user_auth/page/jokes/jokes_category/jokes_category.dart';
-import 'package:user_auth/providers/jokes_category.dart';
+import 'package:user_auth/rest_api/jokes_category.dart';
 
 class JokeCategoryViewModel {
   final JokeCategoryState jokeCategoryState;
