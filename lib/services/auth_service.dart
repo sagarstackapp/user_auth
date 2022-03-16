@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:user_auth/common/app/shared_preference.dart';
 import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/model/user_model.dart';
@@ -72,23 +73,28 @@ class AuthService {
   Future<void> userSignOut() async {
     await firebaseAuth.signOut();
     await googleSignIn.signOut();
+    await removePrefValue(isLogIn);
+    await removePrefValue(isSocialLogin);
   }
 
   //     ======================= Google Sign In =======================     //
   Future<UserCredential> signInWithGoogle(BuildContext context) async {
     try {
       GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-      GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount.authentication;
+      if (googleSignInAccount != null) {
+        GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
 
-      final credentials = GoogleAuthProvider.credential(
-        idToken: googleSignInAuthentication.idToken,
-        accessToken: googleSignInAuthentication.accessToken,
-      );
+        final credentials = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken,
+        );
 
-      UserCredential authResult =
-          await firebaseAuth.signInWithCredential(credentials);
-      return authResult;
+        UserCredential authResult =
+            await firebaseAuth.signInWithCredential(credentials);
+        return authResult;
+      }
+      return null;
     } on FirebaseException catch (e) {
       logs('Catch error in Verify User : ${e.message}');
       Fluttertoast.showToast(

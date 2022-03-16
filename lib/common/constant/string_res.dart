@@ -9,8 +9,8 @@ class StringResources {
   static const String jokesCategory = 'Jokes Category';
   static const String accountRequest = 'Don\'t have an account?';
   static const String logInRequest = 'Already have account?';
-  static const String signInOption = 'Register Here.!';
-  static const String signUpOption = 'Login Here.!';
+  static const String signInOption = 'Register';
+  static const String signUpOption = 'Login';
   static const String forgotPassword = 'Forgot Password';
   static const String get = 'Get Link';
 

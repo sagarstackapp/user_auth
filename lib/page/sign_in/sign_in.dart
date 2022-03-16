@@ -57,17 +57,7 @@ class SignInState extends State<SignIn> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 6),
-              const Text(
-                'Log in your existent account',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: ColorResource.grey,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 child: Form(
@@ -102,40 +92,13 @@ class SignInState extends State<SignIn> {
                 ),
               ),
               const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: CommonElevatedButton(
-                        text: 'Log in',
-                        buttonColor: const Color(0xFF1A49A4),
-                        textColor: ColorResource.white,
-                        textSize: 16,
-                        margin: 0,
-                        onPressed: signInWithEmail,
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: CommonElevatedButton(
-                        text: 'Sign Up',
-                        buttonColor: const Color(0xFF1A49A4),
-                        textColor: ColorResource.white,
-                        textSize: 16,
-                        margin: 0,
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SignUp()),
-                            (route) => false,
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+              CommonElevatedButton(
+                text: StringResources.signIn,
+                buttonColor: const Color(0xFF1A49A4),
+                textColor: ColorResource.white,
+                textSize: 16,
+                margin: 10,
+                onPressed: signInWithEmail,
               ),
               const SizedBox(height: 20),
               const Text(
@@ -162,6 +125,8 @@ class SignInState extends State<SignIn> {
                           btnColor: ColorResource.darkGreen,
                           btnText: 'Google',
                           btnTextColor: ColorResource.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
                           onPressed: signInWithGoogle,
                         ),
                       ),
@@ -177,11 +142,40 @@ class SignInState extends State<SignIn> {
                           btnColor: ColorResource.darkGreen,
                           btnText: 'Facebook',
                           btnTextColor: ColorResource.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
                           onPressed: signInWithFacebook,
                         ),
                       ),
                     ),
                   ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                StringResources.accountRequest,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: ColorResource.grey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: () => Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignUp()),
+                  (route) => false,
+                ),
+                child: const Text(
+                  StringResources.signInOption,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 19,
+                    color: ColorResource.darkGreen,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
