@@ -1,8 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:user_auth/common/constant/color_res.dart';
-import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/common/widget/common_app_bar.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/model/chat_room_model.dart';
@@ -28,13 +25,10 @@ class Conversation extends StatefulWidget {
   ConversationState createState() => ConversationState();
 }
 
-String returnURL;
-
 class ConversationState extends State<Conversation> {
   TextEditingController messageController = TextEditingController();
   final ScrollController scrollController = ScrollController();
   ChatRoomService chatRoomService = ChatRoomService();
-  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   FirebaseNotification firebaseNotification = FirebaseNotification();
 
   @override
@@ -84,7 +78,6 @@ class ConversationState extends State<Conversation> {
                       itemBuilder: (context, index) {
                         return displayMessage(
                           snapshot.data[index].message,
-                          snapshot.data[index].image,
                           snapshot.data[index].sender == widget.sender,
                         );
                       },
@@ -100,7 +93,7 @@ class ConversationState extends State<Conversation> {
     );
   }
 
-  Widget sendRow() {
+  Row sendRow() {
     return Row(
       children: [
         Flexible(child: typeMessageField(messageController)),
@@ -109,7 +102,7 @@ class ConversationState extends State<Conversation> {
     );
   }
 
-  Widget displayMessage(String message, String src, bool sender) {
+  Align displayMessage(String message, bool sender) {
     return Align(
       alignment: sender ? Alignment.bottomRight : Alignment.bottomLeft,
       child: Padding(
@@ -121,15 +114,10 @@ class ConversationState extends State<Conversation> {
           ),
           child: Padding(
             padding: const EdgeInsets.all(15.0),
-            child: message.isEmpty
-                ? CachedNetworkImage(
-                    imageUrl: src,
-                    placeholder: loader,
-                  )
-                : Text(
-                    message,
-                    style: const TextStyle(color: ColorResource.white),
-                  ),
+            child: Text(
+              message,
+              style: const TextStyle(color: ColorResource.white),
+            ),
           ),
         ),
       ),
@@ -137,12 +125,7 @@ class ConversationState extends State<Conversation> {
   }
 
   sendMessageButton() async {
-    // var token = await firebaseNotification.firebaseToken();
-    // logs('Token Value : $token');
-    logs('Received Chat Id : ${widget.chatRoomId}');
-    logs('Return Url : $returnURL');
     ChatRoomModel chatRoomModel = ChatRoomModel(
-      image: returnURL,
       message: messageController.text,
       receiver: widget.receiver,
       sender: widget.sender,

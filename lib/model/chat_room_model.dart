@@ -11,36 +11,36 @@ String chatRoomModelToJson(ChatRoomModel data) => json.encode(data.toJson());
 
 class ChatRoomModel {
   ChatRoomModel({
-    this.image,
     this.message,
     this.receiver,
     this.sender,
     this.time,
     this.token,
+    this.messageType,
   });
 
-  String image;
   String message;
   String receiver;
   String sender;
   String time;
   String token;
+  String messageType;
 
   factory ChatRoomModel.fromJson(Map<String, dynamic> json) => ChatRoomModel(
-        image: json["image"],
         message: json["message"],
         receiver: json["receiver"],
         sender: json["sender"],
         time: json["time"],
         token: json["token"],
+        messageType: json["messageType"],
       );
 
   Map<String, dynamic> toJson() => {
-        "image": image,
         "message": message,
         "receiver": receiver,
         "sender": sender,
         "time": time,
         "token": token,
+        "messageType": messageType,
       };
 }

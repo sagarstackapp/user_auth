@@ -18,7 +18,7 @@ class SearchViewModel {
     getUserDetails();
   }
 
-  Future getUserDetails() async {
+  Future<void> getUserDetails() async {
     User user = FirebaseAuth.instance.currentUser;
     log('User --> $user');
     appState.user = user;

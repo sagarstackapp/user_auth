@@ -13,6 +13,7 @@ import 'package:user_auth/common/widget/common_loader.dart';
 import 'package:user_auth/common/widget/elevated_button.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/model/user_model.dart';
+import 'package:user_auth/page/forgot_password/forgot_password.dart';
 import 'package:user_auth/page/search/search_page.dart';
 import 'package:user_auth/page/sign_up/sign_up.dart';
 import 'package:user_auth/services/auth_service.dart';
@@ -79,15 +80,24 @@ class SignInState extends State<SignIn> {
                   ),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(right: 14, top: 8),
-                child: Text(
-                  'Forgot Password?',
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: ColorResource.darkGreen,
-                    fontWeight: FontWeight.w500,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ForgotPassword()),
+                  );
+                },
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 14, top: 8),
+                  child: Text(
+                    'Forgot Password?',
+                    textAlign: TextAlign.end,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: ColorResource.darkGreen,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
@@ -255,7 +265,30 @@ class SignInState extends State<SignIn> {
         await authService.signInWithFacebook(context);
     if (facebookLoginData != null) {
       appState.user = facebookLoginData.user;
+      Fluttertoast.showToast(
+        msg: 'Hey, ${appState.user.email}',
+        backgroundColor: ColorResource.lightGreen,
+        textColor: ColorResource.white,
+      );
       logs('Current user details : ${appState.user}');
+      logs('Facebook User : ${facebookLoginData.user}');
+      String token = await firebaseNotification.firebaseToken();
+      UserModel userDetails = UserModel(
+        email: facebookLoginData.user.email,
+        lastName: facebookLoginData.user.displayName.split(' ')[0].trim(),
+        firstName: facebookLoginData.user.displayName.split(' ')[1].trim(),
+        image: facebookLoginData.user.photoURL,
+        uid: facebookLoginData.user.uid,
+        token: token,
+        type: 'Facebook',
+      );
+      await userService.createUser(userDetails);
+      await setPrefBoolValue(isSocialLogin, true);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const Search()),
+        (route) => false,
+      );
     }
     setState(() {
       isLoading = false;

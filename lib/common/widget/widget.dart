@@ -39,12 +39,14 @@ Widget lastName(TextEditingController controller) {
   );
 }
 
-Widget email(TextEditingController controller) {
+Widget email(TextEditingController controller,
+    {Color fontColor = ColorResource.darkGreen}) {
   return CommonTextFormField(
     controller: controller,
     hintText: 'Enter email address',
     keyboardType: TextInputType.emailAddress,
     prefixIcon: Icons.alternate_email,
+    fontColor: fontColor,
     validator: (value) {
       if (value.isEmpty) {
         return 'Email address can\'t be empty!';
@@ -64,7 +66,7 @@ Widget password(TextEditingController controller) {
     obscureText: true,
     prefixIcon: Icons.lock_open_rounded,
     inputFormatters: [
-      LengthLimitingTextInputFormatter(8),
+      LengthLimitingTextInputFormatter(9),
     ],
     validator: (value) {
       if (value.isEmpty) {
@@ -73,8 +75,8 @@ Widget password(TextEditingController controller) {
       if (!RegExp(StringResources.passwordRegexp).hasMatch(value)) {
         return 'Password must contains number, alphabet & special character';
       }
-      if (controller.text.length < 8) {
-        return 'Password must be 8 character long.!';
+      if (controller.text.length < 9) {
+        return 'Password must be 9 character long.!';
       }
       return null;
     },
@@ -88,12 +90,15 @@ Widget confirmPassword(
     hintText: 'Enter confirm password',
     prefixIcon: Icons.lock_open_rounded,
     obscureText: true,
+    inputFormatters: [
+      LengthLimitingTextInputFormatter(9),
+    ],
     validator: (value) {
       if (value.isEmpty) {
         return 'Confirm password can\'t be empty!';
       }
-      if (controller.text.length < 8) {
-        return 'Confirm password must be 8 character long.!';
+      if (controller.text.length < 9) {
+        return 'Confirm password must be 9 character long.!';
       }
       if (controller.text != controller1.text) {
         return 'Password do not matching.!';
@@ -107,6 +112,7 @@ Widget typeMessageField(TextEditingController controller) {
   return CommonTextFormField(
     controller: controller,
     hintText: 'Type a message...',
+    prefixIcon: Icons.chat_outlined,
     fontColor: ColorResource.white,
     validator: (value) {
       if (value.isEmpty) {

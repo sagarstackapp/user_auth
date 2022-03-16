@@ -49,7 +49,7 @@ class SearchState extends State<Search> {
           floatingButton(
             Icons.logout,
             'LogOut',
-            () => logOut,
+            () => logOut(),
           ),
         ],
       ),

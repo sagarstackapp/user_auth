@@ -9,16 +9,16 @@ class ChatRoomService {
   createChatRoom(chatRoomModel, String chatRoom) async {
     try {
       await chatRoomCollection.doc(chatRoom).set(chatRoomModel);
-    } catch (e) {
-      logs('Catch error in Create ChatRoom : $e');
+    } on FirebaseException catch (e) {
+      logs('Catch error in Create ChatRoom : ${e.message}');
     }
   }
 
   addConversationMessage(String chatRoom, ChatRoomModel data) {
     try {
       chatRoomCollection.doc(chatRoom).collection('Chats').add(data.toJson());
-    } catch (e) {
-      logs('Catch error in Add Conversation Message : $e');
+    } on FirebaseException catch (e) {
+      logs('Catch error in Add Conversation Message : ${e.message}');
     }
   }
 
@@ -36,8 +36,8 @@ class ChatRoomService {
         allChats.add(chatRoomModel);
       }
       return allChats;
-    } catch (e) {
-      logs('Catch error in Get Conversation Message : $e');
+    } on FirebaseException catch (e) {
+      logs('Catch error in Get Conversation Message : ${e.message}');
       return null;
     }
   }

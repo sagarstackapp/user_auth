@@ -11,10 +11,10 @@ class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key key}) : super(key: key);
 
   @override
-  _ForgotPasswordState createState() => _ForgotPasswordState();
+  ForgotPasswordState createState() => ForgotPasswordState();
 }
 
-class _ForgotPasswordState extends State<ForgotPassword> {
+class ForgotPasswordState extends State<ForgotPassword> {
   final forgotPassword = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   AuthService authService = AuthService();
@@ -23,38 +23,29 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     logs('Current screen --> $runtimeType');
     return Scaffold(
-      appBar: const CommonAppBar(title: StringResources.title),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            titleText(StringResources.forgotPassword),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Form(
-                key: forgotPassword,
-                child: email(emailController),
-              ),
+      appBar: const CommonAppBar(title: StringResources.forgotPassword),
+      body: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Form(
+              key: forgotPassword,
+              child: email(emailController, fontColor: ColorResource.white),
             ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: elevatedButton(StringResources.get, () {
-                getLink();
-              }),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: elevatedButton(StringResources.get, () => getLink()),
+          ),
+        ],
       ),
     );
   }
 
   getLink() {
-    final isValid = forgotPassword.currentState.validate();
-
-    if (isValid) {
+    if (forgotPassword.currentState.validate()) {
       forgotPassword.currentState.save();
-      logs(emailController.text);
       authService.forgotPassword(context, emailController.text);
     } else {
       Fluttertoast.showToast(

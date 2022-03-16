@@ -64,7 +64,8 @@ class CommonTextFormField extends StatelessWidget {
             wordSpacing: 2,
             letterSpacing: 1,
           ),
-          prefixIcon: Icon(prefixIcon, color: ColorResource.darkGreen),
+          prefixIcon:
+              Icon(prefixIcon, color: fontColor ?? ColorResource.darkGreen),
           prefixIconColor: ColorResource.darkGreen,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),

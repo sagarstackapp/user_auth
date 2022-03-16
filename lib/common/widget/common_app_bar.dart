@@ -1,9 +1,9 @@
 // ignore_for_file: missing_required_param
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/constant/image_res.dart';
+import 'package:user_auth/common/widget/common_image_assets.dart';
 
 class CommonAppBar extends PreferredSize {
   final bool isHome;
@@ -33,9 +33,10 @@ class CommonAppBar extends PreferredSize {
                 onTap: () => Navigator.pop(context),
                 child: Container(
                   margin: EdgeInsets.only(right: margin, left: 24),
-                  child: SvgPicture.asset(
-                    ImageResources.backIOSIcon,
+                  child: const CommonImageAsset(
+                    image: ImageResources.backIOSIcon,
                     height: 20,
+                    color: ColorResource.white,
                   ),
                 ),
               ),

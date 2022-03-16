@@ -12,37 +12,12 @@ class AuthService {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   UserModel userDetails;
 
-  //     ======================= Get Current User Details & Check User Logged In or Not =======================     //
-  Future<bool> userLogInCheck() async {
-    bool login;
-    try {
-      var user = firebaseAuth.currentUser;
-      if (user == null) {
-        logs('Hello, No user Found');
-        login = false;
-        return login;
-      } else {
-        logs('Current user --> $user');
-        logs('Hello, This is current user : ${user.uid}');
-        login = true;
-        return login;
-      }
-    } catch (e) {
-      logs(e.toString());
-      return null;
-    }
-  }
-
   //     ======================= SignUp =======================     //
   Future<UserCredential> createUser(String email, String password) async {
     try {
-      UserCredential authUser =
-          await firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      String userId = authUser.user.uid.toString();
-      logs('Created User User Id : $userId');
+      UserCredential authUser = await firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      logs('User data : ${authUser.user}');
       return authUser;
     } on FirebaseAuthException catch (e) {
       logs('Catch error in Create User --> ${e.message}');
@@ -60,9 +35,8 @@ class AuthService {
       BuildContext context, String email, String password) async {
     try {
       UserCredential authUser = await firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+          email: email, password: password);
+      logs('User data : ${authUser.user}');
       return authUser;
     } on FirebaseException catch (e) {
       logs('Catch error in Verify User --> ${e.message}');
@@ -79,21 +53,18 @@ class AuthService {
   forgotPassword(BuildContext context, String email) async {
     try {
       await firebaseAuth.sendPasswordResetEmail(email: email);
-    } catch (e) {
-      logs('Catch error in Verify User : $e');
-      if (e.code == 'ERROR_USER_NOT_FOUND') {
-        Fluttertoast.showToast(
-          msg: 'You don\'t have account, Please Sign Up',
-          backgroundColor: ColorResource.red,
-          textColor: ColorResource.white,
-        );
-      } else {
-        Fluttertoast.showToast(
-          msg: 'Enter Valid Email Address',
-          backgroundColor: ColorResource.red,
-          textColor: ColorResource.white,
-        );
-      }
+      Fluttertoast.showToast(
+        msg: 'Please check your $email account.!',
+        backgroundColor: ColorResource.red,
+        textColor: ColorResource.white,
+      );
+    } on FirebaseException catch (e) {
+      logs('Catch error in Forgot Password --> ${e.message}');
+      Fluttertoast.showToast(
+        msg: e.message.split('. ')[0].trim(),
+        backgroundColor: ColorResource.red,
+        textColor: ColorResource.white,
+      );
     }
   }
 
