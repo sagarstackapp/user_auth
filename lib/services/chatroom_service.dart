@@ -29,21 +29,15 @@ class ChatRoomService {
   }
 
   //     ======================= Get messages =======================     //
-  Future<List<ChatRoomModel>> getConversationMessage(
-      String chatRoom, BuildContext context) async {
+  Stream<QuerySnapshot> getConversationMessage(
+      String chatRoom, BuildContext context) {
     try {
-      List<ChatRoomModel> allChats = [];
-      QuerySnapshot querySnapshot = await chatRoomCollection
+      Stream<QuerySnapshot> querySnapshot = chatRoomCollection
           .doc(chatRoom)
           .collection('Chats')
           .orderBy('time')
-          .get();
-      for (var element in querySnapshot.docs) {
-        Map<String, dynamic> map = element.data() as Map<String, dynamic>;
-        ChatRoomModel chatRoomModel = ChatRoomModel.fromJson(map);
-        allChats.add(chatRoomModel);
-      }
-      return allChats;
+          .snapshots();
+      return querySnapshot;
     } on FirebaseException catch (e) {
       logs('Catch error in Get Conversation Message : ${e.message}');
       showMessage(context, e.message);

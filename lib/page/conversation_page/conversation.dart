@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/method/methods.dart';
@@ -44,83 +45,88 @@ class ConversationState extends State<Conversation> {
     logs('Current screen --> $runtimeType');
     return Scaffold(
       appBar: CommonAppBar(title: widget.receiver),
-      body: Column(
+      body: Container(
+        color: ColorResource.white.withOpacity(0.1),
+        child: Column(
+          children: [
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: chatRoomService.getConversationMessage(
+                    widget.chatRoomId, context),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Container(color: Colors.transparent);
+                  } else if (snapshot.connectionState ==
+                          ConnectionState.active ||
+                      snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasError) {
+                      return const Center(child: Text('Something went wrong'));
+                    } else if (snapshot.hasData) {
+                      for (var element in snapshot.data.docs) {
+                        ChatRoomModel chatRoomModel =
+                            ChatRoomModel.fromJson(snapshot.data.docs);
+                      }
+                      return snapshot.data.docs.isEmpty
+                          ? const Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 200),
+                                child: Text('No message available for now'),
+                              ),
+                            )
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (context, index) {
+                                return displayMessage(
+                                  snapshot.data[index].message,
+                                  snapshot.data[index].sender == widget.sender,
+                                );
+                              },
+                            );
+                    } else {
+                      return const Text('No Messages');
+                    }
+                  } else {
+                    return Center(child: Text(snapshot.connectionState.name));
+                  }
+                },
+              ),
+            ),
+            sendRow(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Container sendRow() {
+    return Container(
+      color: ColorResource.darkGreen,
+      child: Row(
         children: [
-          messageChatScreen(),
-          sendRow(),
+          Flexible(child: typeMessageField(messageController)),
+          chatIcon(8.0, Icons.send_outlined, sendMessageButton),
         ],
       ),
     );
   }
 
-  Expanded messageChatScreen() {
-    return Expanded(
-      child: FutureBuilder<List<ChatRoomModel>>(
-        future:
-            chatRoomService.getConversationMessage(widget.chatRoomId, context),
-        builder: (BuildContext context,
-            AsyncSnapshot<List<ChatRoomModel>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Container(color: Colors.transparent);
-          } else if (snapshot.connectionState == ConnectionState.active ||
-              snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return const Center(child: Text('Something went wrong'));
-            } else if (snapshot.hasData) {
-              return snapshot.data.isEmpty
-                  ? const Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 200),
-                        child: Text('No message available for now'),
-                      ),
-                    )
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        return displayMessage(
-                          snapshot.data[index].message,
-                          snapshot.data[index].sender == widget.sender,
-                        );
-                      },
-                    );
-            } else {
-              return const Text('No Messages');
-            }
-          } else {
-            return Center(child: Text(snapshot.connectionState.name));
-          }
-        },
-      ),
-    );
-  }
-
-  Row sendRow() {
-    return Row(
-      children: [
-        Flexible(child: typeMessageField(messageController)),
-        chatIcon(8.0, Icons.send_outlined, sendMessageButton),
-      ],
-    );
-  }
-
-  Align displayMessage(String message, bool sender) {
-    return Align(
-      alignment: sender ? Alignment.bottomRight : Alignment.bottomLeft,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+  Container displayMessage(String message, bool sender) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      child: Align(
+        alignment: sender ? Alignment.bottomRight : Alignment.bottomLeft,
         child: Container(
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: sender ? Colors.white10 : Colors.white.withOpacity(0.5),
             borderRadius: BorderRadius.circular(10),
+            color: sender ? Colors.grey.shade200 : Colors.blue[200],
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Text(
-              message,
-              style: const TextStyle(color: ColorResource.white),
-            ),
+          child: Text(
+            message,
+            style: const TextStyle(fontSize: 14),
           ),
         ),
       ),
@@ -142,7 +148,7 @@ class ConversationState extends State<Conversation> {
         sendNotification(messageController.text, widget.sender, widget.token);
       }
       messageController.clear();
-      setState(() {});
+      // setState(() {});
     }
   }
 
