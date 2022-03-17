@@ -228,17 +228,17 @@ class SignInState extends State<SignIn> {
       );
       logs('Current user details : ${appState.user}');
       logs('Google User : ${userCredential.additionalUserInfo.profile}');
-      String token = await firebaseNotification.firebaseToken();
+      String token = await firebaseNotification.firebaseToken(context);
       UserModel userDetails = UserModel(
         email: userCredential.additionalUserInfo.profile['email'],
         lastName: userCredential.additionalUserInfo.profile['family_name'],
         firstName: userCredential.additionalUserInfo.profile['given_name'],
         image: userCredential.additionalUserInfo.profile['picture'],
         uid: userCredential.user.uid,
-        token: token,
+        token: token ?? '',
         type: 'Google',
       );
-      await userService.createUser(userDetails);
+      await userService.createUser(userDetails, context);
       await setPrefBoolValue(isSocialLogin, true);
       Navigator.pushAndRemoveUntil(
         context,
@@ -266,17 +266,17 @@ class SignInState extends State<SignIn> {
       );
       logs('Current user details : ${appState.user}');
       logs('Facebook User : ${facebookLoginData.user}');
-      String token = await firebaseNotification.firebaseToken();
+      String token = await firebaseNotification.firebaseToken(context);
       UserModel userDetails = UserModel(
         email: facebookLoginData.user.email,
         lastName: facebookLoginData.user.displayName.split(' ')[0].trim(),
         firstName: facebookLoginData.user.displayName.split(' ')[1].trim(),
         image: facebookLoginData.user.photoURL,
         uid: facebookLoginData.user.uid,
-        token: token,
+        token: token ?? '',
         type: 'Facebook',
       );
-      await userService.createUser(userDetails);
+      await userService.createUser(userDetails, context);
       await setPrefBoolValue(isSocialLogin, true);
       Navigator.pushAndRemoveUntil(
         context,

@@ -114,12 +114,6 @@ Widget typeMessageField(TextEditingController controller) {
     hintText: 'Type a message...',
     prefixIcon: Icons.chat_outlined,
     fontColor: ColorResource.white,
-    validator: (value) {
-      if (value.isEmpty) {
-        return 'Message can\'t be empty!';
-      }
-      return null;
-    },
   );
 }
 
@@ -212,10 +206,7 @@ Widget chatIcon(double margin, IconData icon, VoidCallback onPressed) {
   return Container(
     margin: EdgeInsets.symmetric(horizontal: margin),
     child: IconButton(
-      icon: Icon(
-        icon,
-        color: ColorResource.white.withOpacity(0.5),
-      ),
+      icon: Icon(icon, color: ColorResource.white),
       onPressed: onPressed,
     ),
   );

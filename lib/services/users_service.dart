@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:user_auth/common/constant/string_res.dart';
 import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/model/user_model.dart';
 
@@ -6,15 +8,18 @@ class UserService {
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
 
-  Future createUser(UserModel user) async {
+  //     ======================= Create user =======================     //
+  Future<void> createUser(UserModel user, BuildContext context) async {
     try {
       await userCollection.doc(user.uid).set(user.userMap());
-    } catch (e) {
-      logs('Catch error in Create User : $e');
+    } on FirebaseException catch (e) {
+      logs('Catch error in Create User : ${e.message}');
+      showMessage(context, e.message);
     }
   }
 
-  Future<List<UserModel>> getAllUsers() async {
+  //     ======================= Get all users =======================     //
+  Future<List<UserModel>> getAllUsers(BuildContext context) async {
     try {
       List<UserModel> allUsers = [];
       QuerySnapshot querySnapshot = await userCollection.get();
@@ -24,38 +29,34 @@ class UserService {
         allUsers.add(categoryModel);
       }
       return allUsers;
-    } catch (e) {
-      logs('Catch error in Get All Users : $e');
+    } on FirebaseException catch (e) {
+      logs('Catch error in Get All Users : ${e.message}');
+      showMessage(context, e.message);
       return null;
     }
   }
 
-  Future<UserModel> getCurrentDataUser(String uid) async {
+  //     ======================= Get current user =======================     //
+  Future<UserModel> getCurrentDataUser(String uid, BuildContext context) async {
     try {
       DocumentSnapshot doc = await userCollection.doc(uid).get();
       return UserModel.fromMap(doc.data());
-    } catch (e) {
-      logs('Catch error in Get Current User : $e');
+    } on FirebaseException catch (e) {
+      logs('Catch error in Get Current User : ${e.message}');
+      showMessage(context, e.message);
       return null;
     }
   }
 
-  Future updateToken(String uid, String token) async {
+  //     ======================= Delete token =======================     //
+  Future<void> deleteToken(BuildContext context) async {
     try {
-      var fields = await userCollection.doc(uid).update({'token': token});
-      return fields;
-    } on Exception catch (e) {
-      logs('Catch error in Update Token : $e');
-      return null;
-    }
-  }
-
-  //     ======================= Update User Data in Users Table =======================     //
-  Future purchaseId(String userId, int productId) async {
-    try {
-      await userCollection.doc(userId).update({'pid': productId});
-    } catch (e) {
-      logs('Catch error in Purchase Id : $e');
+      await userCollection
+          .doc(appState.user.uid)
+          .update({'token': FieldValue.delete()});
+    } on FirebaseException catch (e) {
+      logs('Catch error in Update Token : ${e.message}');
+      showMessage(context, e.message);
     }
   }
 }

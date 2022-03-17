@@ -84,7 +84,7 @@ class JokeCategoryState extends State<JokeCategory> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.exit_to_app_outlined),
         onPressed: () async {
-          await authService.userSignOut();
+          await authService.userSignOut(context);
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const SignIn()),

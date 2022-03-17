@@ -5,6 +5,7 @@ import 'package:user_auth/common/method/methods.dart';
 
 Future sendNotification(String body, String title, String token) async {
   String baseUrl = 'https://fcm.googleapis.com/fcm/send';
+  logs('Url --> $baseUrl');
   final response = await http.post(
     Uri.parse(baseUrl),
     headers: {
@@ -31,12 +32,13 @@ Future sendNotification(String body, String title, String token) async {
       "registration_ids": [token]
     }),
   );
-  logs('Status code : ${response.statusCode}');
-  logs('Body : ${response.body}');
+  logs('Status code --> ${response.statusCode}');
   if (response.statusCode == 200 || response.statusCode == 201) {
+    logs('Body --> ${response.body}');
     var message = jsonDecode(response.body);
     return message;
   } else {
-    logs('Status code : ${response.statusCode}');
+    logs('Status code --> ${response.statusCode}');
+    return null;
   }
 }

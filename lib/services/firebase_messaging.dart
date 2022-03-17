@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:user_auth/common/method/methods.dart';
 
@@ -63,14 +65,15 @@ class FirebaseNotification {
   }
 
   //     ======================= Generate Token =======================     //
-  Future<String> firebaseToken() async {
+  Future<String> firebaseToken(BuildContext context) async {
     try {
       var token = await firebaseMessaging.getToken();
-      logs('Firebase Token : $token');
+      logs('Firebase Token --> $token');
       return token;
-    } on Exception catch (e) {
-      logs('Catch error in Firebase Token : $e');
-      return '$e';
+    } on FirebaseException catch (e) {
+      logs('Catch error in Firebase Token --> ${e.message}');
+      showMessage(context, e.message);
+      return null;
     }
   }
 }

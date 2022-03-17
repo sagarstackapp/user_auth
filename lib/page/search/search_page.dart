@@ -58,7 +58,7 @@ class SearchState extends State<Search> {
 
   FutureBuilder usersList() {
     return FutureBuilder<List<UserModel>>(
-      future: userService.getAllUsers(),
+      future: userService.getAllUsers(context),
       builder: (BuildContext context, AsyncSnapshot<List<UserModel>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: LoadingPage());
@@ -154,7 +154,7 @@ class SearchState extends State<Search> {
   }
 
   void logOut() {
-    authService.userSignOut();
+    authService.userSignOut(context);
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const SignIn()),

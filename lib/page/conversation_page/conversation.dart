@@ -54,7 +54,8 @@ class ConversationState extends State<Conversation> {
   Expanded messageChatScreen() {
     return Expanded(
       child: FutureBuilder<List<ChatRoomModel>>(
-        future: chatRoomService.getConversationMessage(widget.chatRoomId),
+        future:
+            chatRoomService.getConversationMessage(widget.chatRoomId, context),
         builder: (BuildContext context,
             AsyncSnapshot<List<ChatRoomModel>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -125,17 +126,20 @@ class ConversationState extends State<Conversation> {
   }
 
   sendMessageButton() async {
-    ChatRoomModel chatRoomModel = ChatRoomModel(
-      message: messageController.text,
-      receiver: widget.receiver,
-      sender: widget.sender,
-      time: DateTime.now().toIso8601String(),
-      token: widget.token,
-    );
-    chatRoomService.addConversationMessage(widget.chatRoomId, chatRoomModel);
-    sendNotification(messageController.text, widget.sender, widget.token);
-    messageController.clear();
-    setState(() {});
+    if (messageController.text.isNotEmpty) {
+      ChatRoomModel chatRoomModel = ChatRoomModel(
+        message: messageController.text,
+        receiver: widget.receiver,
+        sender: widget.sender,
+        time: DateTime.now().toIso8601String(),
+        token: widget.token,
+      );
+      chatRoomService.addConversationMessage(
+          widget.chatRoomId, chatRoomModel, context);
+      sendNotification(messageController.text, widget.sender, widget.token);
+      messageController.clear();
+      setState(() {});
+    }
   }
 
   Widget loader(BuildContext context, String url) {

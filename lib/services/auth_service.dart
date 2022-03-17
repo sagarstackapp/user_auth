@@ -7,11 +7,13 @@ import 'package:user_auth/common/app/shared_preference.dart';
 import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/model/user_model.dart';
+import 'package:user_auth/services/users_service.dart';
 
 class AuthService {
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
   UserModel userDetails;
+  UserService userService = UserService();
 
   //     ======================= SignUp =======================     //
   Future<UserCredential> createUser(String email, String password) async {
@@ -70,7 +72,8 @@ class AuthService {
   }
 
   //     ======================= SignOut =======================     //
-  Future<void> userSignOut() async {
+  Future<void> userSignOut(BuildContext context) async {
+    await userService.deleteToken(context);
     await firebaseAuth.signOut();
     await googleSignIn.signOut();
     await removePrefValue(isLogIn);

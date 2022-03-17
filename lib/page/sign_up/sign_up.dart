@@ -126,18 +126,18 @@ class SignUpState extends State<SignUp> {
       UserCredential userCredential = await authService.createUser(
           emailController.text, passwordController.text);
       if (userCredential != null) {
-        String token = await firebaseNotification.firebaseToken();
+        String token = await firebaseNotification.firebaseToken(context);
         logs('Token Value --> $token');
         UserModel userDetails = UserModel(
           uid: userCredential.user.uid,
           firstName: firstNameController.text,
           lastName: lastNameController.text,
           email: userCredential.user.email,
-          token: token,
+          token: token ?? '',
           type: 'Firebase',
         );
         logs('UserDetails --> ${userDetails.userMap()}');
-        await userService.createUser(userDetails);
+        await userService.createUser(userDetails, context);
         Fluttertoast.showToast(
           msg: '${firstNameController.text}\'s account created successfully..!',
           backgroundColor: ColorResource.orange,

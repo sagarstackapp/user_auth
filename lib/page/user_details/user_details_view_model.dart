@@ -16,7 +16,8 @@ class UserDetailsViewModel {
   }
 
   Future getUserDetails(String uid) async {
-    var value = await userService.getCurrentDataUser(uid);
+    var value =
+        await userService.getCurrentDataUser(uid, userDetailsState.context);
     if (value == null) {
       logs('View Model data is null');
     } else {

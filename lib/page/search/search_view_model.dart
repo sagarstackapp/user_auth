@@ -21,7 +21,8 @@ class SearchViewModel {
     User user = FirebaseAuth.instance.currentUser;
     log('User --> $user');
     appState.user = user;
-    userModel = await userService.getCurrentDataUser(appState.user.uid);
+    userModel = await userService.getCurrentDataUser(
+        appState.user.uid, searchState.context);
     searchState.setState(() {});
   }
 }
