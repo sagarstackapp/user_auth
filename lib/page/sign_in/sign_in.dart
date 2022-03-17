@@ -20,14 +20,14 @@ import 'package:user_auth/services/auth_service.dart';
 import 'package:user_auth/services/firebase_messaging.dart';
 import 'package:user_auth/services/users_service.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({Key key}) : super(key: key);
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({Key key}) : super(key: key);
 
   @override
-  SignInState createState() => SignInState();
+  SignInScreenState createState() => SignInScreenState();
 }
 
-class SignInState extends State<SignIn> {
+class SignInScreenState extends State<SignInScreen> {
   final signInFormKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -204,7 +204,7 @@ class SignInState extends State<SignIn> {
         logs('Current user details : ${appState.user}');
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const Search()),
+          MaterialPageRoute(builder: (context) => const UsersScreen()),
           (route) => false,
         );
       }
@@ -242,7 +242,7 @@ class SignInState extends State<SignIn> {
       await setPrefBoolValue(isSocialLogin, true);
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const Search()),
+        MaterialPageRoute(builder: (context) => const UsersScreen()),
         (route) => false,
       );
     }
@@ -280,7 +280,7 @@ class SignInState extends State<SignIn> {
       await setPrefBoolValue(isSocialLogin, true);
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const Search()),
+        MaterialPageRoute(builder: (context) => const UsersScreen()),
         (route) => false,
       );
     }

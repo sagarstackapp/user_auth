@@ -25,6 +25,7 @@ class JokeCategoryState extends State<JokeCategory> {
 
   @override
   Widget build(BuildContext context) {
+    logs('Current screen --> $runtimeType');
     jokesCategoryProvider =
         Provider.of<JokesCategoryProvider>(context, listen: false);
     jokeCategoryViewModel ??
@@ -87,7 +88,7 @@ class JokeCategoryState extends State<JokeCategory> {
           await authService.userSignOut(context);
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const SignIn()),
+            MaterialPageRoute(builder: (context) => const SignInScreen()),
             (route) => false,
           );
         },

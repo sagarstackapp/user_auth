@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/constant/string_res.dart';
+import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/common/widget/common_app_bar.dart';
 import 'package:user_auth/common/widget/common_image_assets.dart';
 import 'package:user_auth/common/widget/common_loader.dart';
@@ -13,20 +14,21 @@ import 'package:user_auth/page/sign_in/sign_in.dart';
 import 'package:user_auth/services/auth_service.dart';
 import 'package:user_auth/services/users_service.dart';
 
-class Search extends StatefulWidget {
-  const Search({Key key}) : super(key: key);
+class UsersScreen extends StatefulWidget {
+  const UsersScreen({Key key}) : super(key: key);
 
   @override
-  SearchState createState() => SearchState();
+  UsersScreenState createState() => UsersScreenState();
 }
 
-class SearchState extends State<Search> {
+class UsersScreenState extends State<UsersScreen> {
   AuthService authService = AuthService();
   UserService userService = UserService();
   SearchViewModel searchViewModel;
 
   @override
   Widget build(BuildContext context) {
+    logs('Current screen --> $runtimeType');
     searchViewModel ?? (searchViewModel = SearchViewModel(this));
     return Scaffold(
       appBar: CommonAppBar(
@@ -157,7 +159,7 @@ class SearchState extends State<Search> {
     authService.userSignOut(context);
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => const SignIn()),
+      MaterialPageRoute(builder: (context) => const SignInScreen()),
       (route) => false,
     );
   }

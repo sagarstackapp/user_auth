@@ -9,7 +9,7 @@ import 'package:user_auth/page/search/search_page.dart';
 import 'package:user_auth/services/users_service.dart';
 
 class SearchViewModel {
-  SearchState searchState;
+  UsersScreenState searchState;
   UserModel userModel;
   UserService userService = UserService();
 

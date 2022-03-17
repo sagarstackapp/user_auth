@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:user_auth/common/constant/color_res.dart';
+import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/common/widget/common_app_bar.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/model/chat_room_model.dart';
@@ -40,6 +41,7 @@ class ConversationState extends State<Conversation> {
 
   @override
   Widget build(BuildContext context) {
+    logs('Current screen --> $runtimeType');
     return Scaffold(
       appBar: CommonAppBar(title: widget.receiver),
       body: Column(

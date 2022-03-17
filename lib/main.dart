@@ -28,10 +28,10 @@ class MyApp extends StatefulWidget {
       : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> {
   List<SingleChildWidget> providers = [
     ChangeNotifierProvider<JokesCategoryProvider>(
         create: (context) => JokesCategoryProvider()),
@@ -39,6 +39,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    logs('Current screen --> $runtimeType');
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
@@ -62,8 +63,8 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         home: (widget.isLoggedIn || widget.isSocLoggedIn)
-            ? const Search()
-            : const SignIn(),
+            ? const UsersScreen()
+            : const SignInScreen(),
       ),
     );
   }

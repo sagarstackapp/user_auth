@@ -95,7 +95,7 @@ class SignUpState extends State<SignUp> {
               GestureDetector(
                 onTap: () => Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => const SignIn()),
+                  MaterialPageRoute(builder: (context) => const SignInScreen()),
                   (route) => false,
                 ),
                 child: const Text(
@@ -145,7 +145,7 @@ class SignUpState extends State<SignUp> {
         );
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const SignIn()),
+          MaterialPageRoute(builder: (context) => const SignInScreen()),
           (route) => false,
         );
       } else {

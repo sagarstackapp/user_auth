@@ -24,6 +24,7 @@ class JokeListState extends State<JokeList> {
 
   @override
   Widget build(BuildContext context) {
+    logs('Current screen --> $runtimeType');
     jokeListViewModel ?? (jokeListViewModel = JokeListViewModel(this));
     return Scaffold(
       appBar: CommonAppBar(title: '${widget.selectedCategory}\'s Jokes'),

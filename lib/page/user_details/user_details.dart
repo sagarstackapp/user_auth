@@ -111,7 +111,7 @@ class UserDetailsState extends State<UserDetails> {
     authService.userSignOut(context);
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => const SignIn()),
+      MaterialPageRoute(builder: (context) => const SignInScreen()),
       (route) => false,
     );
   }
