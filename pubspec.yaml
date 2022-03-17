@@ -38,6 +38,7 @@ dependencies:
   firebase_auth: ^3.3.11
   firebase_messaging: ^11.2.11
   flutter_local_notifications: ^9.4.0
+  firebase_storage: ^10.2.9
 
   # Social login Integration :
   google_sign_in: ^5.2.4
@@ -58,7 +59,7 @@ dependencies:
   # Image View :
   cached_network_image: ^3.2.0
   flutter_svg: ^1.0.3
-
+  image_picker: ^0.8.4+11
 
 dev_dependencies:
   flutter_test:

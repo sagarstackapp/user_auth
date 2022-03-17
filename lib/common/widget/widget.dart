@@ -112,7 +112,6 @@ Widget typeMessageField(TextEditingController controller) {
   return CommonTextFormField(
     controller: controller,
     hintText: 'Type a message...',
-    prefixIcon: Icons.chat_outlined,
     fontColor: ColorResource.white,
   );
 }
