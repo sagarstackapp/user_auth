@@ -14,7 +14,7 @@ import 'package:user_auth/common/widget/elevated_button.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/model/user_model.dart';
 import 'package:user_auth/page/forgot_password/forgot_password.dart';
-import 'package:user_auth/page/search/search_page.dart';
+import 'package:user_auth/page/search/users_screen.dart';
 import 'package:user_auth/page/sign_up/sign_up.dart';
 import 'package:user_auth/services/auth_service.dart';
 import 'package:user_auth/services/firebase_messaging.dart';

@@ -138,7 +138,9 @@ class ConversationState extends State<Conversation> {
       );
       chatRoomService.addConversationMessage(
           widget.chatRoomId, chatRoomModel, context);
-      sendNotification(messageController.text, widget.sender, widget.token);
+      if (widget.token != null && widget.token.isNotEmpty) {
+        sendNotification(messageController.text, widget.sender, widget.token);
+      }
       messageController.clear();
       setState(() {});
     }

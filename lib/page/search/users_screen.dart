@@ -9,7 +9,7 @@ import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/model/user_model.dart';
 import 'package:user_auth/page/conversation_page/conversation.dart';
 import 'package:user_auth/page/jokes/jokes_category/jokes_category.dart';
-import 'package:user_auth/page/search/search_view_model.dart';
+import 'package:user_auth/page/search/users_screen_view_model.dart';
 import 'package:user_auth/page/sign_in/sign_in.dart';
 import 'package:user_auth/services/auth_service.dart';
 import 'package:user_auth/services/users_service.dart';
@@ -24,17 +24,17 @@ class UsersScreen extends StatefulWidget {
 class UsersScreenState extends State<UsersScreen> {
   AuthService authService = AuthService();
   UserService userService = UserService();
-  SearchViewModel searchViewModel;
+  UsersScreenViewModel usersScreenViewModel;
 
   @override
   Widget build(BuildContext context) {
     logs('Current screen --> $runtimeType');
-    searchViewModel ?? (searchViewModel = SearchViewModel(this));
+    usersScreenViewModel ?? (usersScreenViewModel = UsersScreenViewModel(this));
     return Scaffold(
       appBar: CommonAppBar(
-        title: searchViewModel.userModel == null
+        title: usersScreenViewModel.userModel == null
             ? ' '
-            : '${searchViewModel.userModel.firstName} ${searchViewModel.userModel.lastName}\'s Chat',
+            : '${usersScreenViewModel.userModel.firstName} ${usersScreenViewModel.userModel.lastName}\'s Chat',
         isHome: true,
       ),
       body: usersList(),
@@ -86,11 +86,11 @@ class UsersScreenState extends State<UsersScreen> {
                       }
                       return GestureDetector(
                         onTap: () {
-                          String roomId = searchViewModel
+                          String roomId = usersScreenViewModel
                                       .userModel.uid.hashCode <=
                                   snapshot.data[index].uid.hashCode
-                              ? '${searchViewModel.userModel.uid}_${snapshot.data[index].uid}'
-                              : '${snapshot.data[index].uid}_${searchViewModel.userModel.uid}';
+                              ? '${usersScreenViewModel.userModel.uid}_${snapshot.data[index].uid}'
+                              : '${snapshot.data[index].uid}_${usersScreenViewModel.userModel.uid}';
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -125,7 +125,7 @@ class UsersScreenState extends State<UsersScreen> {
                               ),
                             ),
                             title: Text(
-                              '${snapshot.data[index].firstName ?? ''} ${snapshot.data[index].lastName ?? ''}',
+                              '${snapshot.data[index].firstName.toCapitalized() ?? ''} ${snapshot.data[index].lastName.toCapitalized() ?? ''}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,

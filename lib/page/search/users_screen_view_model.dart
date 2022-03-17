@@ -5,15 +5,15 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:user_auth/common/constant/string_res.dart';
 import 'package:user_auth/model/user_model.dart';
-import 'package:user_auth/page/search/search_page.dart';
+import 'package:user_auth/page/search/users_screen.dart';
 import 'package:user_auth/services/users_service.dart';
 
-class SearchViewModel {
-  UsersScreenState searchState;
+class UsersScreenViewModel {
+  UsersScreenState usersScreenState;
   UserModel userModel;
   UserService userService = UserService();
 
-  SearchViewModel(this.searchState) {
+  UsersScreenViewModel(this.usersScreenState) {
     getUserDetails();
   }
 
@@ -22,7 +22,7 @@ class SearchViewModel {
     log('User --> $user');
     appState.user = user;
     userModel = await userService.getCurrentDataUser(
-        appState.user.uid, searchState.context);
-    searchState.setState(() {});
+        appState.user.uid, usersScreenState.context);
+    usersScreenState.setState(() {});
   }
 }
