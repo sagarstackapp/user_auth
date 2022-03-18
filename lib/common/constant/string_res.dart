@@ -5,6 +5,7 @@ AppState appState = AppState();
 class StringResources {
   static const String title = 'Firebase User Integration';
   static const String signIn = 'Sign In';
+  static const String bioSignIn = 'BioMetrics';
   static const String register = 'Register';
   static const String jokesCategory = 'Jokes Category';
   static const String accountRequest = 'Don\'t have an account?';

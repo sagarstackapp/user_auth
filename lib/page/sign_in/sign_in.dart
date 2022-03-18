@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:sign_button/constants.dart';
 import 'package:sign_button/create_button.dart';
 import 'package:user_auth/common/app/shared_preference.dart';
@@ -8,6 +9,7 @@ import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/constant/image_res.dart';
 import 'package:user_auth/common/constant/string_res.dart';
 import 'package:user_auth/common/method/methods.dart';
+import 'package:user_auth/common/widget/common_alert_dialog.dart';
 import 'package:user_auth/common/widget/common_image_assets.dart';
 import 'package:user_auth/common/widget/common_loader.dart';
 import 'package:user_auth/common/widget/elevated_button.dart';
@@ -35,6 +37,7 @@ class SignInScreenState extends State<SignInScreen> {
   AuthService authService = AuthService();
   UserService userService = UserService();
   FirebaseNotification firebaseNotification = FirebaseNotification();
+  LocalAuthentication localAuthentication = LocalAuthentication();
 
   @override
   Widget build(BuildContext context) {
@@ -92,13 +95,29 @@ class SignInScreenState extends State<SignInScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              CommonElevatedButton(
-                text: StringResources.signIn,
-                buttonColor: const Color(0xFF1A49A4),
-                textColor: ColorResource.white,
-                textSize: 16,
-                margin: 10,
-                onPressed: signInWithEmail,
+              Row(
+                children: [
+                  Expanded(
+                    child: CommonElevatedButton(
+                      text: StringResources.signIn,
+                      buttonColor: const Color(0xFF1A49A4),
+                      textColor: ColorResource.white,
+                      textSize: 16,
+                      margin: 10,
+                      onPressed: signInWithEmail,
+                    ),
+                  ),
+                  Expanded(
+                    child: CommonElevatedButton(
+                      text: StringResources.bioSignIn,
+                      buttonColor: const Color(0xFF1A49A4),
+                      textColor: ColorResource.white,
+                      textSize: 16,
+                      margin: 10,
+                      onPressed: signInWithBio,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
               const Text(
@@ -288,5 +307,32 @@ class SignInScreenState extends State<SignInScreen> {
     setState(() {
       isLoading = false;
     });
+  }
+
+  Future<void> signInWithBio() async {
+    bool isBioAvailable = await localAuthentication.canCheckBiometrics;
+    logs('Bio status -->$isBioAvailable');
+    if (isBioAvailable) {
+      List<BiometricType> availableBios =
+          await localAuthentication.getAvailableBiometrics();
+      logs('Available bios --> $availableBios');
+      if (availableBios.isNotEmpty) {
+        bool isFingerAvailable = availableBios
+            .any((element) => element == BiometricType.fingerprint);
+        logs('isFingerAvailable --> $isFingerAvailable');
+        bool isAuthenticated = await localAuthentication.authenticate(
+          localizedReason: 'Scan your finger to continue.',
+          stickyAuth: true,
+        );
+        logs('Auth status --> $isAuthenticated');
+      }
+    } else {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const CustomAlertDialog(
+            message: 'Oops.! Your device not supporting Bio metrics.!'),
+      );
+    }
   }
 }
