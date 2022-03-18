@@ -59,7 +59,7 @@ Widget email(TextEditingController controller,
   );
 }
 
-Widget password(TextEditingController controller) {
+Widget password(TextEditingController controller, {bool validate = false}) {
   return CommonTextFormField(
     controller: controller,
     hintText: 'Enter password',
@@ -72,11 +72,13 @@ Widget password(TextEditingController controller) {
       if (value.isEmpty) {
         return 'Password can\'t be empty!';
       }
-      if (!RegExp(StringResources.passwordRegexp).hasMatch(value)) {
-        return 'Password must contains number, alphabet & special character';
-      }
-      if (controller.text.length < 9) {
-        return 'Password must be 9 character long.!';
+      if (validate) {
+        if (!RegExp(StringResources.passwordRegexp).hasMatch(value)) {
+          return 'Password must contains number, alphabet & special character';
+        }
+        if (controller.text.length < 9) {
+          return 'Password must be 9 character long.!';
+        }
       }
       return null;
     },

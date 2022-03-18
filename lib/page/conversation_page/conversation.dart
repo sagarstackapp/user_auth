@@ -118,8 +118,11 @@ class ConversationState extends State<Conversation> {
             ),
           ),
           Flexible(child: typeMessageField(messageController)),
-          chatIcon(8.0, Icons.send_outlined,
-              conversationViewModel.sendMessageButton),
+          chatIcon(
+            8.0,
+            Icons.send_outlined,
+            conversationViewModel.sendMessageButton,
+          ),
         ],
       ),
     );

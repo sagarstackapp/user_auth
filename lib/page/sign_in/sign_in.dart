@@ -65,7 +65,7 @@ class SignInScreenState extends State<SignInScreen> {
                   child: Column(
                     children: [
                       email(emailController),
-                      password(passwordController),
+                      password(passwordController, validate: false),
                     ],
                   ),
                 ),
@@ -202,6 +202,7 @@ class SignInScreenState extends State<SignInScreen> {
         );
         appState.user = userCredentials.user;
         logs('Current user details : ${appState.user}');
+        await setPrefBoolValue(isLogIn, true);
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const UsersScreen()),
