@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/constant/image_res.dart';
-import 'package:user_auth/common/constant/string_res.dart';
 import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/common/widget/common_app_bar.dart';
+import 'package:user_auth/common/widget/common_drawer.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/page/jokes/jokes_category/jokes_category.dart';
 import 'package:user_auth/page/sign_in/sign_in.dart';
@@ -19,40 +19,42 @@ class UserDetails extends StatefulWidget {
 }
 
 class UserDetailsState extends State<UserDetails> {
-  UserDetailsViewModel userDetailsViewModel;
-
+  GlobalKey<ScaffoldState> drawerKey = GlobalKey();
   AuthService authService = AuthService();
   GoogleSignIn googleSignIn = GoogleSignIn();
+  UserDetailsViewModel userDetailsViewModel;
 
   @override
   Widget build(BuildContext context) {
-    userDetailsViewModel ?? (userDetailsViewModel = UserDetailsViewModel(this));
     logs('Current screen --> $runtimeType');
-    return SafeArea(
-      maintainBottomViewPadding: true,
-      child: Scaffold(
-        appBar: CommonAppBar(
-            title: userDetailsViewModel.userModel == null
-                ? ' '
-                : '${userDetailsViewModel.userModel.firstName}\'s ${StringResources.title}'),
-        body: userDetailsViewModel.userModel == null
-            ? const Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(ColorResource.orange),
-                  strokeWidth: 5,
-                  backgroundColor: ColorResource.white,
-                ),
-              )
-            : userDetails(),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.celebration_outlined),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const JokeCategory()),
-            );
-          },
-        ),
+    userDetailsViewModel ?? (userDetailsViewModel = UserDetailsViewModel(this));
+    return Scaffold(
+      key: drawerKey,
+      endDrawerEnableOpenDragGesture: false,
+      appBar: CommonAppBar(
+        title: userDetailsViewModel.userModel == null
+            ? ''
+            : '${userDetailsViewModel.userModel.firstName.toCapitalized()} ${userDetailsViewModel.userModel.lastName.toCapitalized()}',
+        onDrawerTap: () => drawerKey.currentState.openEndDrawer(),
+      ),
+      endDrawer: CommonDrawer(drawerKey: drawerKey, isUserScreen: true),
+      body: userDetailsViewModel.userModel == null
+          ? const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(ColorResource.orange),
+                strokeWidth: 5,
+                backgroundColor: ColorResource.white,
+              ),
+            )
+          : userDetails(),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.celebration_outlined),
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const JokeCategory()),
+          );
+        },
       ),
     );
   }

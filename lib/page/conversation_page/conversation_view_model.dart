@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:user_auth/common/app/app_state.dart';
 import 'package:user_auth/common/constant/string_res.dart';
 import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/model/chat_room_model.dart';
@@ -11,8 +12,6 @@ import 'package:user_auth/page/conversation_page/conversation.dart';
 import 'package:user_auth/services/chatroom_service.dart';
 import 'package:user_auth/services/firebase_messaging.dart';
 import 'package:user_auth/services/notification_api.dart';
-
-enum MessageType { attachment, message }
 
 class ConversationViewModel {
   final ConversationState conversationState;

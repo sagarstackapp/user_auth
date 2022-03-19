@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:sign_button/constants.dart';
 import 'package:sign_button/create_button.dart';
+import 'package:user_auth/common/app/app_state.dart';
 import 'package:user_auth/common/app/shared_preference.dart';
 import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/constant/image_res.dart';
@@ -42,166 +43,169 @@ class SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     logs('Current screen --> $runtimeType');
-    return Scaffold(
-      backgroundColor: ColorResource.white,
-      body: Stack(
-        children: [
-          ListView(
-            children: [
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 50),
-                child: const CommonImageAsset(image: ImageResources.login),
-              ),
-              const Text(
-                'Welcome back!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        backgroundColor: ColorResource.white,
+        body: Stack(
+          children: [
+            ListView(
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 50),
+                  child: const CommonImageAsset(image: ImageResources.login),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                child: Form(
-                  key: signInFormKey,
-                  child: Column(
+                const Text(
+                  'Welcome back!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Form(
+                    key: signInFormKey,
+                    child: Column(
+                      children: [
+                        email(emailController),
+                        password(passwordController, validate: false),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ForgotPassword()),
+                    );
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.only(right: 14, top: 8),
+                    child: Text(
+                      'Forgot Password?',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: ColorResource.darkGreen,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CommonElevatedButton(
+                        text: StringResources.signIn,
+                        buttonColor: const Color(0xFF1A49A4),
+                        textColor: ColorResource.white,
+                        textSize: 16,
+                        margin: 10,
+                        onPressed: signInWithEmail,
+                      ),
+                    ),
+                    Expanded(
+                      child: CommonElevatedButton(
+                        text: StringResources.bioSignIn,
+                        buttonColor: const Color(0xFF1A49A4),
+                        textColor: ColorResource.white,
+                        textSize: 16,
+                        margin: 10,
+                        onPressed: signInWithBio,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Or connect using',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: ColorResource.grey,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
                     children: [
-                      email(emailController),
-                      password(passwordController, validate: false),
+                      Expanded(
+                        child: SizedBox(
+                          height: 50,
+                          child: SignInButton(
+                            buttonType: ButtonType.google,
+                            width: double.infinity,
+                            buttonSize: ButtonSize.small,
+                            btnColor: ColorResource.darkGreen,
+                            btnText: 'Google',
+                            btnTextColor: ColorResource.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            onPressed: signInWithGoogle,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: SizedBox(
+                          height: 50,
+                          child: SignInButton(
+                            buttonType: ButtonType.facebook,
+                            width: double.infinity,
+                            buttonSize: ButtonSize.small,
+                            btnColor: ColorResource.darkGreen,
+                            btnText: 'Facebook',
+                            btnTextColor: ColorResource.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            onPressed: signInWithFacebook,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
+                const SizedBox(height: 20),
+                const Text(
+                  StringResources.accountRequest,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: ColorResource.grey,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                GestureDetector(
+                  onTap: () => Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const ForgotPassword()),
-                  );
-                },
-                child: const Padding(
-                  padding: EdgeInsets.only(right: 14, top: 8),
-                  child: Text(
-                    'Forgot Password?',
-                    textAlign: TextAlign.end,
+                    MaterialPageRoute(builder: (context) => const SignUp()),
+                    (route) => false,
+                  ),
+                  child: const Text(
+                    StringResources.signInOption,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 19,
                       color: ColorResource.darkGreen,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: CommonElevatedButton(
-                      text: StringResources.signIn,
-                      buttonColor: const Color(0xFF1A49A4),
-                      textColor: ColorResource.white,
-                      textSize: 16,
-                      margin: 10,
-                      onPressed: signInWithEmail,
-                    ),
-                  ),
-                  Expanded(
-                    child: CommonElevatedButton(
-                      text: StringResources.bioSignIn,
-                      buttonColor: const Color(0xFF1A49A4),
-                      textColor: ColorResource.white,
-                      textSize: 16,
-                      margin: 10,
-                      onPressed: signInWithBio,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Or connect using',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: ColorResource.grey,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 50,
-                        child: SignInButton(
-                          buttonType: ButtonType.google,
-                          width: double.infinity,
-                          buttonSize: ButtonSize.small,
-                          btnColor: ColorResource.darkGreen,
-                          btnText: 'Google',
-                          btnTextColor: ColorResource.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          onPressed: signInWithGoogle,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: SizedBox(
-                        height: 50,
-                        child: SignInButton(
-                          buttonType: ButtonType.facebook,
-                          width: double.infinity,
-                          buttonSize: ButtonSize.small,
-                          btnColor: ColorResource.darkGreen,
-                          btnText: 'Facebook',
-                          btnTextColor: ColorResource.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          onPressed: signInWithFacebook,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                StringResources.accountRequest,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: ColorResource.grey,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 8),
-              GestureDetector(
-                onTap: () => Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SignUp()),
-                  (route) => false,
-                ),
-                child: const Text(
-                  StringResources.signInOption,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 19,
-                    color: ColorResource.darkGreen,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
-          isLoading ? const LoadingPage() : Container(),
-        ],
+                const SizedBox(height: 20),
+              ],
+            ),
+            isLoading ? const LoadingPage() : Container(),
+          ],
+        ),
       ),
     );
   }
@@ -256,7 +260,7 @@ class SignInScreenState extends State<SignInScreen> {
         image: userCredential.additionalUserInfo.profile['picture'],
         uid: userCredential.user.uid,
         token: token ?? '',
-        type: 'Google',
+        type: LogInType.google.name,
       );
       await userService.createUser(userDetails, context);
       await setPrefBoolValue(isSocialLogin, true);
@@ -294,7 +298,7 @@ class SignInScreenState extends State<SignInScreen> {
         image: facebookLoginData.user.photoURL,
         uid: facebookLoginData.user.uid,
         token: token ?? '',
-        type: 'Facebook',
+        type: LogInType.facebook.name,
       );
       await userService.createUser(userDetails, context);
       await setPrefBoolValue(isSocialLogin, true);
@@ -321,7 +325,7 @@ class SignInScreenState extends State<SignInScreen> {
             .any((element) => element == BiometricType.fingerprint);
         logs('isFingerAvailable --> $isFingerAvailable');
         bool isAuthenticated = await localAuthentication.authenticate(
-          localizedReason: 'Scan your finger to continue.',
+          localizedReason: 'Verify your BioMetric to Login.!',
           stickyAuth: true,
         );
         logs('Auth status --> $isAuthenticated');

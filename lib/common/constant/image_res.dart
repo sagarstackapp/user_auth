@@ -6,4 +6,5 @@ class ImageResources {
   static const login = images + 'login.png';
   static const backIOSIcon = icons + 'back_button.svg';
   static const drawerMenuIcon = icons + 'drawer_menu.svg';
+  static const closeIcon = icons + 'close_icon.svg';
 }

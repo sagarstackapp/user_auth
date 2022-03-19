@@ -4,6 +4,7 @@ import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/constant/string_res.dart';
 import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/common/widget/common_app_bar.dart';
+import 'package:user_auth/common/widget/common_drawer.dart';
 import 'package:user_auth/common/widget/common_loader.dart';
 import 'package:user_auth/page/jokes/jokes_category/jokes_category_view_model.dart';
 import 'package:user_auth/page/jokes/jokes_list/jokes_list.dart';
@@ -19,6 +20,7 @@ class JokeCategory extends StatefulWidget {
 }
 
 class JokeCategoryState extends State<JokeCategory> {
+  GlobalKey<ScaffoldState> drawerKey = GlobalKey();
   AuthService authService = AuthService();
   JokesCategoryProvider jokesCategoryProvider;
   JokeCategoryViewModel jokeCategoryViewModel;
@@ -31,7 +33,13 @@ class JokeCategoryState extends State<JokeCategory> {
     jokeCategoryViewModel ??
         (jokeCategoryViewModel = JokeCategoryViewModel(this));
     return Scaffold(
-      appBar: const CommonAppBar(title: StringResources.jokesCategory),
+      key: drawerKey,
+      endDrawerEnableOpenDragGesture: false,
+      appBar: CommonAppBar(
+        title: StringResources.jokesCategory,
+        onDrawerTap: () => drawerKey.currentState.openEndDrawer(),
+      ),
+      endDrawer: CommonDrawer(drawerKey: drawerKey, isJokesScreen: true),
       body: ChangeNotifierProvider<JokesCategoryProvider>(
         create: (BuildContext context) {
           return JokesCategoryProvider();

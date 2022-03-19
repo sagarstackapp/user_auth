@@ -9,13 +9,15 @@ class CommonAppBar extends PreferredSize {
   final bool isHome;
   final double margin;
   final String title;
+  final GestureTapCallback onDrawerTap;
 
-  const CommonAppBar({
-    Key key,
-    this.isHome = false,
-    this.margin = 16,
-    this.title = '',
-  }) : super(key: key);
+  const CommonAppBar(
+      {Key key,
+      this.isHome = false,
+      this.margin = 16,
+      this.title = '',
+      this.onDrawerTap})
+      : super(key: key);
 
   @override
   Size get preferredSize => Size.fromHeight(AppBar().preferredSize.height);
@@ -51,6 +53,17 @@ class CommonAppBar extends PreferredSize {
               ),
             ),
             const Spacer(),
+            InkWell(
+              onTap: onDrawerTap,
+              child: Container(
+                margin: EdgeInsets.only(right: margin, left: 24),
+                child: const CommonImageAsset(
+                  image: ImageResources.drawerMenuIcon,
+                  height: 20,
+                  color: ColorResource.white,
+                ),
+              ),
+            ),
           ],
         ),
       ),

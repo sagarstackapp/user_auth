@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:user_auth/common/app/app_state.dart';
 import 'package:user_auth/common/constant/color_res.dart';
 import 'package:user_auth/common/constant/image_res.dart';
 import 'package:user_auth/common/constant/string_res.dart';
@@ -38,81 +39,85 @@ class SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     logs('Current screen --> $runtimeType');
-    return Scaffold(
-      backgroundColor: ColorResource.white,
-      body: Stack(
-        children: [
-          ListView(
-            children: [
-              const Text(
-                'Register User',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 50),
-                child: const CommonImageAsset(image: ImageResources.login),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                child: Form(
-                  key: signUpFormKey,
-                  child: Column(
-                    children: [
-                      name(firstNameController, 'Enter first name'),
-                      name(lastNameController, 'Enter last name'),
-                      email(emailController),
-                      password(passwordController),
-                      confirmPassword(
-                          passwordController, confirmPasswordController),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              CommonElevatedButton(
-                text: StringResources.register,
-                buttonColor: const Color(0xFF1A49A4),
-                textColor: ColorResource.white,
-                textSize: 16,
-                margin: 10,
-                onPressed: registerUser,
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                StringResources.logInRequest,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: ColorResource.grey,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 8),
-              GestureDetector(
-                onTap: () => Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SignInScreen()),
-                  (route) => false,
-                ),
-                child: const Text(
-                  StringResources.signUpOption,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        backgroundColor: ColorResource.white,
+        body: Stack(
+          children: [
+            ListView(
+              children: [
+                const Text(
+                  'Register User',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 19,
-                    color: ColorResource.darkGreen,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 50),
+                  child: const CommonImageAsset(image: ImageResources.login),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Form(
+                    key: signUpFormKey,
+                    child: Column(
+                      children: [
+                        name(firstNameController, 'Enter first name'),
+                        name(lastNameController, 'Enter last name'),
+                        email(emailController),
+                        password(passwordController),
+                        confirmPassword(
+                            passwordController, confirmPasswordController),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                CommonElevatedButton(
+                  text: StringResources.register,
+                  buttonColor: const Color(0xFF1A49A4),
+                  textColor: ColorResource.white,
+                  textSize: 16,
+                  margin: 10,
+                  onPressed: registerUser,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  StringResources.logInRequest,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: ColorResource.grey,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
-          isLoading ? const LoadingPage() : Container(),
-        ],
+                const SizedBox(height: 8),
+                GestureDetector(
+                  onTap: () => Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SignInScreen()),
+                    (route) => false,
+                  ),
+                  child: const Text(
+                    StringResources.signUpOption,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 19,
+                      color: ColorResource.darkGreen,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+            isLoading ? const LoadingPage() : Container(),
+          ],
+        ),
       ),
     );
   }
@@ -134,7 +139,7 @@ class SignUpState extends State<SignUp> {
           lastName: lastNameController.text,
           email: userCredential.user.email,
           token: token ?? '',
-          type: 'Firebase',
+          type: LogInType.firebase.name,
         );
         logs('UserDetails --> ${userDetails.userMap()}');
         await userService.createUser(userDetails, context);
