@@ -1,8 +1,10 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:user_auth/common/app/shared_preference.dart';
@@ -33,7 +35,9 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  LocalAuthentication localAuthentication = LocalAuthentication();
+  final messengerKey = GlobalKey<ScaffoldMessengerState>();
+  StreamSubscription<ConnectivityResult> connectivitySubscription;
+  Connectivity connectivity = Connectivity();
   List<SingleChildWidget> providers = [
     ChangeNotifierProvider<JokesCategoryProvider>(
         create: (context) => JokesCategoryProvider()),
@@ -43,6 +47,22 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     checkBioMetrics();
+    connectivitySubscription =
+        connectivity.onConnectivityChanged.listen((ConnectivityResult event) {
+      messengerKey.currentState.showSnackBar(
+        SnackBar(
+          backgroundColor: event == ConnectivityResult.none
+              ? ColorResource.red
+              : ColorResource.lightGreen,
+          content: Text(
+            event == ConnectivityResult.none
+                ? 'Device is Offline'
+                : 'Back online',
+            style: const TextStyle(color: ColorResource.white),
+          ),
+        ),
+      );
+    });
     super.initState();
   }
 
@@ -56,6 +76,7 @@ class MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: providers,
       child: MaterialApp(
+        scaffoldMessengerKey: messengerKey,
         title: 'Firebase User Integration',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -80,7 +101,7 @@ class MyAppState extends State<MyApp> {
 
   Future<void> checkBioMetrics() async {
     if (widget.isLoggedIn || widget.isSocLoggedIn) {
-      isBioMetrics = await signInWithBio();
+      isBioMetrics = await bioMetricsVerification();
       logs('isBioMetrics message --> $isBioMetrics');
       setState(() {});
       if (isBioMetrics) {

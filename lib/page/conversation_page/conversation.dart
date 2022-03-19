@@ -44,7 +44,7 @@ class ConversationState extends State<Conversation> {
     conversationViewModel ??
         (conversationViewModel = ConversationViewModel(this));
     return Scaffold(
-      appBar: CommonAppBar(title: widget.receiver),
+      appBar: CommonAppBar(title: widget.receiver, showDrawer: false),
       body: Stack(
         children: [
           Container(
@@ -67,10 +67,13 @@ class ConversationState extends State<Conversation> {
                               child: Text('Something went wrong'));
                         } else if (snapshot.hasData) {
                           return snapshot.data.docs.isEmpty
-                              ? const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(top: 200),
-                                    child: Text('No message available for now'),
+                              ? Center(
+                                  child: Text(
+                                    'Let\'s Start chat with ${widget.receiver}',
+                                    style: const TextStyle(
+                                      color: ColorResource.white,
+                                      fontSize: 20,
+                                    ),
                                   ),
                                 )
                               : ListView.builder(
@@ -87,11 +90,24 @@ class ConversationState extends State<Conversation> {
                                   },
                                 );
                         } else {
-                          return const Text('No Messages');
+                          return const Text(
+                            'No Messages',
+                            style: TextStyle(
+                              color: ColorResource.white,
+                              fontSize: 20,
+                            ),
+                          );
                         }
                       } else {
                         return Center(
-                            child: Text(snapshot.connectionState.name));
+                          child: Text(
+                            snapshot.connectionState.name,
+                            style: const TextStyle(
+                              color: ColorResource.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                        );
                       }
                     },
                   ),

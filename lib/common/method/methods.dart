@@ -1,7 +1,9 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:user_auth/common/constant/color_res.dart';
+import 'package:user_auth/common/widget/common_alert_dialog.dart';
 
 LocalAuthentication localAuthentication = LocalAuthentication();
 
@@ -33,7 +35,7 @@ extension StringCasingExtension on String {
       .join(' ');
 }
 
-Future<bool> signInWithBio() async {
+Future<bool> bioMetricsVerification() async {
   bool isBioAvailable = await localAuthentication.canCheckBiometrics;
   logs('Bio status -->$isBioAvailable');
   if (isBioAvailable) {
@@ -56,4 +58,43 @@ Future<bool> signInWithBio() async {
   } else {
     return true;
   }
+}
+
+Future<bool> checkConnectionState(BuildContext context,
+    {bool showToast = true}) async {
+  ConnectivityResult connectivityResult =
+      await Connectivity().checkConnectivity();
+  bool isConnect = getConnectionValue(connectivityResult);
+  if (!isConnect && showToast) {
+    showDialog(
+      context: context,
+      builder: (_) => const CustomAlertDialog(),
+    );
+  }
+  return isConnect;
+}
+
+bool getConnectionValue(ConnectivityResult connectivityResult) {
+  bool status = false;
+  switch (connectivityResult) {
+    case ConnectivityResult.mobile:
+      status = true;
+      break;
+    case ConnectivityResult.wifi:
+      status = true;
+      break;
+    case ConnectivityResult.bluetooth:
+      status = true;
+      break;
+    case ConnectivityResult.ethernet:
+      status = true;
+      break;
+    case ConnectivityResult.none:
+      status = false;
+      break;
+    default:
+      status = false;
+      break;
+  }
+  return status;
 }
