@@ -87,8 +87,9 @@ class UsersScreenState extends State<UsersScreen> {
                       child: Text('No user available for now'),
                     ),
                   )
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                : ListView(
+                    primary: true,
+                    physics: const BouncingScrollPhysics(),
                     children: [
                       const Padding(
                         padding: EdgeInsets.only(left: 14, bottom: 10, top: 16),

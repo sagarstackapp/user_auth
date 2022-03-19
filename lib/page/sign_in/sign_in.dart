@@ -314,6 +314,13 @@ class SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> signInWithBio() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) =>
+          const CustomAlertDialog(message: 'Will work in some time.!'),
+    );
+    return;
     bool isBioAvailable = await localAuthentication.canCheckBiometrics;
     logs('Bio status -->$isBioAvailable');
     if (isBioAvailable) {

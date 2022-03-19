@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:user_auth/common/app/shared_preference.dart';
@@ -32,10 +33,18 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
+  LocalAuthentication localAuthentication = LocalAuthentication();
   List<SingleChildWidget> providers = [
     ChangeNotifierProvider<JokesCategoryProvider>(
         create: (context) => JokesCategoryProvider()),
   ];
+  bool isBioMetrics = false;
+
+  @override
+  void initState() {
+    checkBioMetrics();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +71,26 @@ class MyAppState extends State<MyApp> {
             selectionHandleColor: ColorResource.darkGreen,
           ),
         ),
-        home: (widget.isLoggedIn || widget.isSocLoggedIn)
+        home: ((widget.isLoggedIn || widget.isSocLoggedIn) && isBioMetrics)
             ? const UsersScreen()
             : const SignInScreen(),
       ),
     );
+  }
+
+  Future<void> checkBioMetrics() async {
+    if (widget.isLoggedIn || widget.isSocLoggedIn) {
+      isBioMetrics = await signInWithBio();
+      logs('isBioMetrics message --> $isBioMetrics');
+      setState(() {});
+      if (isBioMetrics) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const UsersScreen()),
+          (route) => false,
+        );
+      }
+    }
   }
 }
 
