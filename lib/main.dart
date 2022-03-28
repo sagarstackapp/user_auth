@@ -101,7 +101,7 @@ class MyAppState extends State<MyApp> {
 
   Future<void> checkBioMetrics() async {
     if (widget.isLoggedIn || widget.isSocLoggedIn) {
-      isBioMetrics = await bioMetricsVerification();
+      isBioMetrics = await bioMetricsVerification(context);
       logs('isBioMetrics message --> $isBioMetrics');
       setState(() {});
       if (isBioMetrics) {

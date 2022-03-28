@@ -318,12 +318,14 @@ class SignInScreenState extends State<SignInScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) =>
-          const CustomAlertDialog(message: 'Will work in some time.!'),
+          const CustomAlertDialog(message: 'Available in some time.!'),
     );
-    return;
+    // return;
     bool isBioAvailable = await localAuthentication.canCheckBiometrics;
     logs('Bio status -->$isBioAvailable');
-    if (isBioAvailable) {
+    bool isDeviceAvailable = await localAuthentication.isDeviceSupported();
+    logs('Device status --> $isDeviceAvailable');
+    if (isBioAvailable && isDeviceAvailable) {
       List<BiometricType> availableBios =
           await localAuthentication.getAvailableBiometrics();
       logs('Available bios --> $availableBios');
