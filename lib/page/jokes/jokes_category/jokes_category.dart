@@ -8,7 +8,6 @@ import 'package:user_auth/common/widget/common_drawer.dart';
 import 'package:user_auth/common/widget/common_loader.dart';
 import 'package:user_auth/page/jokes/jokes_category/jokes_category_view_model.dart';
 import 'package:user_auth/page/jokes/jokes_list/jokes_list.dart';
-import 'package:user_auth/page/sign_in/sign_in.dart';
 import 'package:user_auth/rest_api/jokes_category.dart';
 import 'package:user_auth/services/auth_service.dart';
 
@@ -89,17 +88,6 @@ class JokeCategoryState extends State<JokeCategory> {
                 : const LoadingPage();
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.exit_to_app_outlined),
-        onPressed: () async {
-          await authService.userSignOut(context);
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const SignInScreen()),
-            (route) => false,
-          );
-        },
       ),
     );
   }

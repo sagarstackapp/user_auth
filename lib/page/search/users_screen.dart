@@ -6,10 +6,8 @@ import 'package:user_auth/common/widget/common_app_bar.dart';
 import 'package:user_auth/common/widget/common_drawer.dart';
 import 'package:user_auth/common/widget/common_image_assets.dart';
 import 'package:user_auth/common/widget/common_loader.dart';
-import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/model/user_model.dart';
 import 'package:user_auth/page/conversation_page/conversation.dart';
-import 'package:user_auth/page/jokes/jokes_category/jokes_category.dart';
 import 'package:user_auth/page/search/users_screen_view_model.dart';
 import 'package:user_auth/page/sign_in/sign_in.dart';
 import 'package:user_auth/services/auth_service.dart';
@@ -46,25 +44,6 @@ class UsersScreenState extends State<UsersScreen> {
         ),
         endDrawer: CommonDrawer(drawerKey: drawerKey, isChatScreen: true),
         body: usersList(),
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            floatingButton(
-              Icons.celebration_outlined,
-              'Jokes Category',
-              () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const JokeCategory())),
-            ),
-            const SizedBox(height: 10),
-            floatingButton(
-              Icons.logout,
-              'LogOut',
-              () => logOut(),
-            ),
-          ],
-        ),
       ),
     );
   }

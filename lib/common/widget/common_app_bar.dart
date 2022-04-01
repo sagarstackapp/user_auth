@@ -58,12 +58,16 @@ class CommonAppBar extends PreferredSize {
             if (showDrawer)
               InkWell(
                 onTap: onDrawerTap,
-                child: Container(
-                  margin: EdgeInsets.only(right: margin, left: 24),
-                  child: const CommonImageAsset(
-                    image: ImageResources.drawerMenuIcon,
-                    height: 20,
-                    color: ColorResource.white,
+                child: Hero(
+                  tag: 'profileTag',
+                  transitionOnUserGestures: true,
+                  child: Container(
+                    margin: EdgeInsets.only(right: margin, left: 24),
+                    child: const CommonImageAsset(
+                      image: ImageResources.drawerMenuIcon,
+                      height: 20,
+                      color: ColorResource.white,
+                    ),
                   ),
                 ),
               ),

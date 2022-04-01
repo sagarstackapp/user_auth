@@ -6,7 +6,6 @@ import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/common/widget/common_app_bar.dart';
 import 'package:user_auth/common/widget/common_drawer.dart';
 import 'package:user_auth/common/widget/widget.dart';
-import 'package:user_auth/page/jokes/jokes_category/jokes_category.dart';
 import 'package:user_auth/page/sign_in/sign_in.dart';
 import 'package:user_auth/page/user_details/user_details_view_model.dart';
 import 'package:user_auth/services/auth_service.dart';
@@ -47,15 +46,6 @@ class UserDetailsState extends State<UserDetails> {
               ),
             )
           : userDetails(),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.celebration_outlined),
-        onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const JokeCategory()),
-          );
-        },
-      ),
     );
   }
 

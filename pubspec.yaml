@@ -33,14 +33,14 @@ dependencies:
   fluttertoast: ^8.0.9
 
   # Firebase :
-  firebase_core: ^1.13.1
-  cloud_firestore: ^3.1.10
-  firebase_messaging: ^11.2.11
+  firebase_core: ^1.14.0
+  cloud_firestore: ^3.1.11
+  firebase_messaging: ^11.2.12
   flutter_local_notifications: ^9.4.0
-  firebase_storage: ^10.2.9
+  firebase_storage: ^10.2.10
 
   # User Authentication :
-  firebase_auth: ^3.3.11
+  firebase_auth: ^3.3.12
   google_sign_in: ^5.2.4
   sign_button: ^2.0.2
   flutter_facebook_auth: ^4.1.2

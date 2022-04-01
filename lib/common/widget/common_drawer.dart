@@ -32,17 +32,17 @@ class CommonDrawer extends StatelessWidget {
         children: [
           const Spacer(),
           GestureDetector(
-              onTap: () {
-                drawerKey.currentState.openDrawer();
-                if (!isUserScreen) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const UserDetails()),
-                  );
-                }
-              },
-              child: menuItem(Icons.person_pin_rounded, 'My profile')),
+            onTap: () {
+              drawerKey.currentState.openDrawer();
+              if (!isUserScreen) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const UserDetails()),
+                );
+              }
+            },
+            child: menuItem(Icons.person_pin_rounded, 'My profile'),
+          ),
           const Spacer(),
           GestureDetector(
               onTap: () {
@@ -51,7 +51,8 @@ class CommonDrawer extends StatelessWidget {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const UsersScreen()),
+                      builder: (context) => const UsersScreen(),
+                    ),
                     (route) => false,
                   );
                 }
@@ -59,31 +60,37 @@ class CommonDrawer extends StatelessWidget {
               child: menuItem(Icons.wechat, 'Chat')),
           const Spacer(),
           GestureDetector(
-              onTap: () {
-                drawerKey.currentState.openDrawer();
-                if (!isJokesScreen) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const JokeCategory()),
-                  );
-                }
-              },
-              child: menuItem(Icons.celebration, 'Jokes Time')),
+            onTap: () {
+              drawerKey.currentState.openDrawer();
+              if (!isJokesScreen) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const JokeCategory(),
+                  ),
+                );
+              }
+            },
+            child: menuItem(Icons.celebration, 'Jokes Time'),
+          ),
           const Spacer(),
           GestureDetector(
             onTap: () => drawerKey.currentState.openDrawer(),
-            child: Container(
-              height: 48,
-              width: 48,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: ColorResource.white),
-              ),
-              child: const CommonImageAsset(
-                image: ImageResources.closeIcon,
-                color: ColorResource.white,
+            child: Hero(
+              tag: 'profileTag',
+              transitionOnUserGestures: true,
+              child: Container(
+                height: 48,
+                width: 48,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: ColorResource.white),
+                ),
+                child: const CommonImageAsset(
+                  image: ImageResources.closeIcon,
+                  color: ColorResource.white,
+                ),
               ),
             ),
           ),
