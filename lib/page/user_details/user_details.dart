@@ -5,6 +5,7 @@ import 'package:user_auth/common/constant/image_res.dart';
 import 'package:user_auth/common/method/methods.dart';
 import 'package:user_auth/common/widget/common_app_bar.dart';
 import 'package:user_auth/common/widget/common_drawer.dart';
+import 'package:user_auth/common/widget/common_loader.dart';
 import 'package:user_auth/common/widget/widget.dart';
 import 'package:user_auth/page/sign_in/sign_in.dart';
 import 'package:user_auth/page/user_details/user_details_view_model.dart';
@@ -28,25 +29,15 @@ class UserDetailsState extends State<UserDetails> {
     logs('Current screen --> $runtimeType');
     userDetailsViewModel ?? (userDetailsViewModel = UserDetailsViewModel(this));
     return Scaffold(
-      key: drawerKey,
-      endDrawerEnableOpenDragGesture: false,
-      appBar: CommonAppBar(
-        title: userDetailsViewModel.userModel == null
-            ? ''
-            : '${userDetailsViewModel.userModel.firstName.toCapitalized()} ${userDetailsViewModel.userModel.lastName.toCapitalized()}',
-        onDrawerTap: () => drawerKey.currentState.openEndDrawer(),
-      ),
-      endDrawer: CommonDrawer(drawerKey: drawerKey, isUserScreen: true),
-      body: userDetailsViewModel.userModel == null
-          ? const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(ColorResource.orange),
-                strokeWidth: 5,
-                backgroundColor: ColorResource.white,
-              ),
-            )
-          : userDetails(),
-    );
+        key: drawerKey,
+        appBar: CommonAppBar(
+          title: 'User profile',
+          onDrawerTap: () => drawerKey.currentState.openEndDrawer(),
+        ),
+        endDrawer: CommonDrawer(drawerKey: drawerKey, isUserScreen: true),
+        body: userDetailsViewModel.userModel == null
+            ? const LoadingPage()
+            : userDetails());
   }
 
   Widget userDetails() {
@@ -91,7 +82,7 @@ class UserDetailsState extends State<UserDetails> {
             const SizedBox(height: 20),
             elevatedButton(
               'LogOut',
-              () => logOut,
+              () => logOut(),
             ),
           ],
         ),
