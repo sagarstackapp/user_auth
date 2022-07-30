@@ -17,6 +17,8 @@ jobs:
         uses: gittools/actions/gitversion/setup@v0.9.4
         with:
           versionSpec: '5.3.x'
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       - name: Use GitVersion
         id: gitversion
         uses: gittools/actions/gitversion/execute@v0.9.4
