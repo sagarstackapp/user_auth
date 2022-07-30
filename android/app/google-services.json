@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "17508847403",
+    "firebase_url": "https://userintegration-f8858-default-rtdb.firebaseio.com",
     "project_id": "userintegration-f8858",
     "storage_bucket": "userintegration-f8858.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "17508847403-4dj639i7dmfgvrahh83rtrmakojrl47g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.user_auth",
+            "certificate_hash": "2358f1ee2011999323de5b3394b6af611f25ec76"
+          }
+        },
         {
           "client_id": "17508847403-ts2adlcaj5upuis3fk15bepcr4msanlu.apps.googleusercontent.com",
           "client_type": 1,
@@ -37,6 +46,13 @@
             {
               "client_id": "17508847403-e70i2j76t12vnglbdmgpj275s7tg6adm.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "17508847403-0k0b7gcgujo55jkr9f5ui4c88rqsh54c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.userAuth"
+              }
             }
           ]
         }
