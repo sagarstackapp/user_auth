@@ -13,7 +13,8 @@
 
   jobs:
     build:
-      runs-on: ubuntu-latest
+      name: Intall Dependency, Abalyze and Run tests
+      runs-on: macos-latest
 
       steps:
         - uses: actions/checkout@v3
