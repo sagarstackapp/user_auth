@@ -76,13 +76,15 @@ class SignUpState extends State<SignUp> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                CommonElevatedButton(
-                  text: StringResources.register,
-                  buttonColor: const Color(0xFF1A49A4),
-                  textColor: ColorResource.white,
-                  textSize: 16,
-                  margin: 10,
-                  onPressed: registerUser,
+                AbsorbPointer(
+                  child: CommonElevatedButton(
+                    text: StringResources.register,
+                    buttonColor: const Color(0xFF1A49A4),
+                    textColor: ColorResource.white,
+                    textSize: 16,
+                    margin: 10,
+                    onPressed: registerUser,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 const Text(

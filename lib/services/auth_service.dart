@@ -143,4 +143,45 @@ class AuthService {
       return null;
     }
   }
+
+  //     ======================= PhoneNumber Sign In =======================     //
+  Future<UserCredential> signInWithMobileNumber(BuildContext context,
+      {@required String phoneNumber, @required String smsCode}) async {
+    try {
+      await firebaseAuth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
+          UserCredential userCredential =
+              await firebaseAuth.signInWithCredential(phoneAuthCredential);
+          logs('User --> ${userCredential.user}');
+        },
+        verificationFailed: (FirebaseAuthException error) {
+          if (error.code == 'invalid-phone-number') {
+            showMessage(context, 'The provided phone number is not valid.');
+          } else if (error.code == 'firebase_auth/invalid-verification-code') {
+            showMessage(context, 'The provided OTP is not valid.');
+          } else {
+            showMessage(context, error.message);
+          }
+        },
+        codeSent: (String verificationId, int forceResendingToken) async {
+          PhoneAuthCredential phoneAuthCredential =
+              PhoneAuthProvider.credential(
+                  verificationId: verificationId, smsCode: smsCode);
+          UserCredential userCredential =
+              await firebaseAuth.signInWithCredential(phoneAuthCredential);
+          logs('User --> ${userCredential.user}');
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          logs('VerifyId --> $verificationId');
+        },
+        timeout: const Duration(seconds: 30),
+      );
+      return null;
+    } on FirebaseException catch (e) {
+      logs('Catch error in Verify User : ${e.message}');
+      showMessage(context, e.message);
+      return null;
+    }
+  }
 }

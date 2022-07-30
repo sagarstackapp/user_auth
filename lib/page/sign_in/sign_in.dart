@@ -117,7 +117,7 @@ class SignInScreenState extends State<SignInScreen> {
                         textColor: ColorResource.white,
                         textSize: 16,
                         margin: 10,
-                        onPressed: signInWithBio,
+                        onPressed: singInWithOTP,
                       ),
                     ),
                   ],
@@ -347,5 +347,9 @@ class SignInScreenState extends State<SignInScreen> {
             message: 'Oops.! Your device not supporting Bio metrics.!'),
       );
     }
+  }
+
+  void singInWithOTP() {
+    authService.signInWithMobileNumber(context, phoneNumber: '+919265843792', smsCode: '123456');
   }
 }
